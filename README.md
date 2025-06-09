@@ -42,6 +42,9 @@ A report on abilities of various popular LLMs to write correct [gleam](https://g
 
 ## Random Notes
 
+- html to markdown
+  - https://github.com/JohannesKaufmann/html-to-markdown
+
 - llm.txt inspiration
   - https://llmstxt.new/
   - https://llmstxt.org/
