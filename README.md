@@ -38,8 +38,6 @@ A report on abilities of various popular LLMs to write correct [gleam](https://g
 
 ## LLM.txt
 
-Look for inspiration:
-
 ## Random Notes
 
 - llm.txt inspiration
