@@ -41,7 +41,7 @@ A report on abilities of various popular LLMs to write correct [gleam](https://g
 ## Random Notes
 
 - llm.txt inspiration
-  - https://www.llmstxt.new/
+  - https://llmstxt.new/
   - https://llmstxt.org/
   - https://daisyui.com/llms.txt
   - https://bun.sh/llm.txt
