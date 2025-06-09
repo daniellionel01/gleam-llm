@@ -67,3 +67,4 @@ A report on abilities of various popular LLMs to write correct [gleam](https://g
 - additional information
   - gleam cli
   - how to download package documentation
+  - how to get more information on certain packages
