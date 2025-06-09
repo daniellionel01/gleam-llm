@@ -17,6 +17,8 @@ A report on abilities of various popular LLMs to write correct [gleam](https://g
 - metrics
   - how many iterations did it take?
   - how much information is necessary?
+  - what aspects of gleam are most commonly used incorrectly?
+    (f.e. imports, hallucinating functions on modules, type mismatch, ...)
 
 - llms to test
   - claude
