@@ -49,7 +49,7 @@ A report on abilities of various popular LLMs to write correct [gleam](https://g
   - https://bun.sh/llm.txt
   - https://svelte.dev/docs/llms
 
-- use gleam tour content?
+- https://tour.gleam.run/everything/
 - concepts in gleam
   - pattern matching
   - `use`
