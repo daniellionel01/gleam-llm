@@ -34,6 +34,9 @@ A report on abilities of various popular LLMs to write correct [gleam](https://g
   - pick advent of code challenges
   - write tests for something
   - something with `use`
+  - write ffi for an npm package
+  - write ffi for an elixir package
+  - write something with erlang and otp
 
 - open questions:
   - how many iterations should be the max. for a LLM to try?
@@ -57,6 +60,8 @@ A report on abilities of various popular LLMs to write correct [gleam](https://g
   - pattern matching
   - `use`
   - option & result type
+  - pipes & function capture
+  - functions (pub, types, labels)
   - imports
   - custom types
   - lists
