@@ -2,79 +2,39 @@
 
 A report on abilities of various popular LLMs to write correct [gleam](https://gleam.run/) code.
 
-## WIP
+**This project is a work in progress and not complete! No results have been concluded yet.**
 
-**This project is a work in progress!**
+## Introduction
 
-## Goals
+At the time of this writing (June 2025), LLMs across the board are quite bad at writing gleam code.
+They hallucinate syntax (if statements), hallucinate functions from the stdlib, forget to unwrap result type,
+and do not know how to leverage `use`.
 
-- [ ] create automations for llms to create gleam program and verify
-- [ ] find out current state of LLMs to create correct gleam programs
-- [ ] create llm.txt
+Since gleam itself is quite a minimalistic language, I think it would not take much additional context for a
+LLM to be able to write quality gleam code. If we made this work, this should yield in a powerful agentic coding
+assistant. Coupled with quick feedback loops that it achieves with a compiler that gives useful error messages.
 
-## Tests & Baseline
+*Disclaimer: pretty much all information in here is subject to change at least every couple of months
+as new models come out, existing models are updated and prices change.*
 
-- metrics
-  - how many iterations did it take?
-  - how much information is necessary?
-  - what aspects of gleam are most commonly used incorrectly?
-    (f.e. imports, hallucinating functions on modules, type mismatch, ...)
+## Methodology
 
-- llms to test
-  - claude
-  - gemini
-  - openai
-  - deepseek r1
-  - llama
+To achieve our goal, there are multiple milestones to achieve first:
+- create an evaluator that takes a case (which is a description of a gleam program for the LLM), prompts the LLM
+  and automatically evaluates the output, giving it a maximum of 5 iterations to give us a correct gleam program.
+- analyse weak points of common failures across llms and cases (f.e. a certain aspect of the gleam syntax)
+- come up with different llm.txt and run evaluator again, this time with the llm.txt as additional context
+- identify and compress most efficient llm.txt as much as possible, as to keep cost as low as possible while
+  prioritising program correctness (only 100% is acceptable).
 
-- programs to test with increasing complexity
-  - "hello world"
-  - web server that renders some html
-  - web server json api
-  - pick advent of code challenges
-  - write tests for something
-  - something with `use`
-  - write ffi for an npm package
-  - write ffi for an elixir package
-  - write something with erlang and otp
+A case is already prepared with all required dependencies.
 
-- open questions:
-  - how many iterations should be the max. for a LLM to try?
+## Evaluator
 
 ## LLM.txt
 
-## Random Notes
+## Reports
 
-- html to markdown
-  - https://github.com/JohannesKaufmann/html-to-markdown
+## Conclusion
 
-- llm.txt inspiration
-  - https://llmstxt.new/
-  - https://llmstxt.org/
-  - https://daisyui.com/llms.txt
-  - https://bun.sh/llm.txt
-  - https://svelte.dev/docs/llms
-
-- https://tour.gleam.run/everything/
-- concepts in gleam
-  - pattern matching
-  - `use`
-  - option & result type
-  - pipes & function capture
-  - functions (pub, types, labels)
-  - imports
-  - custom types
-  - lists
-  - arithmetic operations (ints vs floats)
-  - panic and todo
-  - javascript & erlang ffi
-- facts about gleam
-  - no early returns
-  - everything is an expression
-  - immutable
-  - no loops, use recursion
-  - no if statements, use case
-- additional information
-  - gleam cli
-  - how to download package documentation
-  - how to get more information on certain packages
+Since the llm.txt would be given to every new thread with a LLM, let us break down the costs for the providers:
