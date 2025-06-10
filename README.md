@@ -33,10 +33,17 @@ To achieve our goal, there are multiple milestones to achieve first:
 [Evaluator Code](./evaluator)
 
 These are the cases we are going to let the LLM attempt to implement:
-1. ...
+- ...
 
 These are the LLM providers we are going to prompt:
-1. ...
+- gpt-4o-2024-11-20
+- o4-mini-2025-04-16
+- claude-3-7-sonnet-20250219
+- claude-sonnet-4-20250514
+- gemini-2.5-flash-preview-05-20
+- gemini-2.5-pro-preview-06-05
+- DeepSeek-R1-0528
+- DeepSeek-V3-0324
 
 A case is already prepared with all required dependencies.
 
@@ -51,4 +58,4 @@ landscape and api of gleam packages that are being used.
 
 ## Conclusion
 
-Since the llm.txt would be given to every new thread with a LLM, let us break down the costs for the providers:
+Since the llm.txt would be given to every new thread with a LLM, let us break down the costs for the providers (https://llm-stats.com/):
