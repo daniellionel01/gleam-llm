@@ -33,7 +33,13 @@ To achieve our goal, here is an outline of our approach:
 [Evaluator Code](./evaluator)
 
 These are the cases we are going to let the LLM attempt to implement:
-- ...
+- simple hello world
+- web server that renders some html
+- web server json api
+- advent of code challenge
+- `use` utility (like given library)
+- write ffi for npm & elixir package
+- write something with erlang & otp
 
 These are the LLM providers we are going to prompt:
 - gpt-4o-2024-11-20
