@@ -20,20 +20,34 @@ as new models come out, existing models are updated and prices change.*
 ## Methodology
 
 To achieve our goal, there are multiple milestones to achieve first:
-- create an evaluator that takes a case (which is a description of a gleam program for the LLM), prompts the LLM
+
+1. create an evaluator that takes a case (which is a description of a gleam program for the LLM), prompts the LLM
   and automatically evaluates the output, giving it a maximum of 5 iterations to give us a correct gleam program.
-- analyse weak points of common failures across llms and cases (f.e. a certain aspect of the gleam syntax)
-- come up with different llm.txt and run evaluator again, this time with the llm.txt as additional context
-- identify and compress most efficient llm.txt as much as possible, as to keep cost as low as possible while
+2. analyse weak points of common failures across llms and cases (f.e. a certain aspect of the gleam syntax)
+3. come up with different llm.txt and run evaluator again, this time with the llm.txt as additional context
+4. identify and compress most efficient llm.txt as much as possible, as to keep cost as low as possible while
   prioritising program correctness (only 100% is acceptable).
 
-A case is already prepared with all required dependencies.
-
 ## Evaluator
+
+[Evaluator Code](./evaluator)
+
+These are the cases we are going to let the LLM attempt to implement:
+1. ...
+
+These are the LLM providers we are going to prompt:
+1. ...
+
+A case is already prepared with all required dependencies.
 
 ## LLM.txt
 
 ## Reports
+
+## Access to Dependency Docs
+
+Making the LLM be able to produce syntactically correct gleam was not the hard part. The hard part is the everychanging
+landscape and api of gleam packages that are being used.
 
 ## Conclusion
 
