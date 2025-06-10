@@ -8,6 +8,8 @@
 
 ## tests
 
+- build twice to avoid build warnings
+
 - metrics
   - how many iterations did it take?
   - how much information is necessary?

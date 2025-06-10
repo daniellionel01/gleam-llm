@@ -19,7 +19,7 @@ as new models come out, existing models are updated and prices change.*
 
 ## Methodology
 
-To achieve our goal, there are multiple milestones to achieve first:
+To achieve our goal, here is an outline of our approach:
 
 1. create an evaluator that takes a case (which is a description of a gleam program for the LLM), prompts the LLM
   and automatically evaluates the output, giving it a maximum of 5 iterations to give us a correct gleam program.
