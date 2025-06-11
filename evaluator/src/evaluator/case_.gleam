@@ -13,7 +13,7 @@ gleam_stdlib = \">= 0.44.0 and < 2.0.0\"
 "
 
 pub type Case {
-  Case(pwd: String, deps: List(String))
+  Case(pwd: String)
 }
 
 pub fn scaffold(case_: Case) {
@@ -53,6 +53,31 @@ pub fn tmp_pwd() {
 pub fn gleam_check(case_: Case) -> Result(String, String) {
   let out =
     shellout.command(run: "gleam", with: ["check"], in: case_.pwd, opt: [])
+
+  case out {
+    Error(#(_, err)) -> Error(err)
+    Ok(out) -> Ok(out)
+  }
+}
+
+pub fn gleam_build(case_: Case) -> Result(Nil, String) {
+  let out =
+    shellout.command(run: "gleam", with: ["build"], in: case_.pwd, opt: [])
+
+  case out {
+    Error(#(_, err)) -> Error(err)
+    Ok(_) -> Ok(Nil)
+  }
+}
+
+pub fn gleam_run(case_: Case, args: List(String)) -> Result(String, String) {
+  let out =
+    shellout.command(
+      run: "gleam",
+      with: ["run", ..args],
+      in: case_.pwd,
+      opt: [],
+    )
 
   case out {
     Error(#(_, err)) -> Error(err)
