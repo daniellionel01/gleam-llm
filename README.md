@@ -49,8 +49,6 @@ These are the LLM providers we are going to prompt:
 - claude-sonnet-4-20250514
 - gemini-2.5-flash-preview-05-20
 - gemini-2.5-pro-preview-06-05
-- DeepSeek-R1-0528
-- DeepSeek-V3-0324
 
 A case is already prepared with all required dependencies.
 
