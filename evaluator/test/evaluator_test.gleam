@@ -1,13 +1,31 @@
+import evaluator/llm
 import gleeunit
+import gleeunit/should
 
 pub fn main() -> Nil {
   gleeunit.main()
 }
 
-// gleeunit test functions end in `_test`
-pub fn hello_world_test() {
-  let name = "Joe"
-  let greeting = "Hello, " <> name <> "!"
+pub fn prompt_openai_test() {
+  llm.prompt(llm.GPT4o, "you are a calculator. output only the result.", "5+4")
+  |> should.equal(Ok("9"))
 
-  assert greeting == "Hello, Joe!"
+  llm.prompt(llm.O4mini, "you are a calculator. output only the result.", "5+4")
+  |> should.equal(Ok("9"))
+}
+
+pub fn prompt_gemini_test() {
+  llm.prompt(
+    llm.Gemini25flash,
+    "you are a calculator. output only the result.",
+    "5+4",
+  )
+  |> should.equal(Ok("9"))
+
+  llm.prompt(
+    llm.Gemini25pro,
+    "you are a calculator. output only the result.",
+    "5+4",
+  )
+  |> should.equal(Ok("9"))
 }
