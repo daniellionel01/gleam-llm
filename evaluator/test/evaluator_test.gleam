@@ -29,3 +29,19 @@ pub fn prompt_gemini_test() {
   )
   |> should.equal(Ok("9"))
 }
+
+pub fn prompt_anthropic_test() {
+  llm.prompt(
+    llm.Claude37Sonnet,
+    "you are a calculator. output only the result.",
+    "5+4",
+  )
+  |> should.equal(Ok("9"))
+
+  llm.prompt(
+    llm.ClaudeSonnet4,
+    "you are a calculator. output only the result.",
+    "5+4",
+  )
+  |> should.equal(Ok("9"))
+}

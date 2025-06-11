@@ -106,7 +106,20 @@ pub fn make_body(model: Model, system: String, user: String) {
       ])
       |> json.to_string()
     }
-    Anthropic -> todo
+    Anthropic -> {
+      let model_id = model_to_identifier(model)
+
+      let messages = [
+        [#("role", json.string("user")), #("content", json.string(user))],
+      ]
+      json.object([
+        #("model", json.string(model_id)),
+        #("system", json.string(system)),
+        #("max_tokens", json.int(1024)),
+        #("messages", json.array(messages, of: json.object)),
+      ])
+      |> json.to_string()
+    }
   }
 }
 
@@ -116,7 +129,10 @@ pub fn auth_request(req: request.Request(a), provider: Provider) {
     OpenAI ->
       request.prepend_header(req, "Authorization", "Bearer " <> env.openai_key)
     Gemini -> request.set_query(req, [#("key", env.gemini_key)])
-    Anthropic -> todo
+    Anthropic ->
+      req
+      |> request.prepend_header("x-api-key", env.anthropic_key)
+      |> request.prepend_header("anthropic-version", "2023-06-01")
   }
 }
 
@@ -130,7 +146,7 @@ pub fn provider_base_url(model: Model) {
       <> model
       <> ":generateContent"
     }
-    Anthropic -> todo
+    Anthropic -> "https://api.anthropic.com/v1/messages"
   }
 }
 
@@ -184,7 +200,14 @@ pub fn provider_decoder(provider: Provider) -> decode.Decoder(DecodedResult) {
       )
       decode.success(List2(candidates))
     }
-    Anthropic -> todo
+    Anthropic -> {
+      let content_decoder = {
+        use text <- decode.field("text", decode.string)
+        decode.success(text)
+      }
+      use content <- decode.field("content", decode.list(content_decoder))
+      decode.success(List1(content))
+    }
   }
 }
 

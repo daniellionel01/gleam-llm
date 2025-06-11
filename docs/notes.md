@@ -21,6 +21,8 @@
 
 ## miscelleaneous
 
+- adjust max_tokens in anthropic api?
+
 - html to markdown
   - https://github.com/JohannesKaufmann/html-to-markdown
 
