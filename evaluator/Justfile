@@ -2,3 +2,6 @@ set dotenv-load
 
 test:
   gleam test
+
+test-llms:
+  gleam run -m evaluator_llm_dev
