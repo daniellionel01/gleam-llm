@@ -62,6 +62,8 @@ A case is already prepared with all required dependencies.
 Making the LLM be able to produce syntactically correct gleam was not the hard part. The hard part is the everychanging
 landscape and api of gleam packages that are being used.
 
+## MCP Server
+
 ## Conclusion
 
 Since the llm.txt would be given to every new thread with a LLM, let us break down the costs for the providers (https://llm-stats.com/):
