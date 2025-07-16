@@ -1,6 +1,6 @@
 import evaluator/case_
+import gleam/result
 import gleeunit
-import gleeunit/should
 
 pub fn main() -> Nil {
   gleeunit.main()
@@ -11,8 +11,7 @@ pub fn case_scaffold_test() {
   let thecase = case_.Case(pwd)
   use <- case_.defer(fn() { case_.cleanup(thecase) })
 
-  case_.scaffold(thecase)
-  |> should.be_ok()
+  assert result.is_ok(case_.scaffold(thecase))
 
   case_.cleanup(thecase)
 }
@@ -22,21 +21,18 @@ pub fn case_check_successfull_test() {
   let thecase = case_.Case(pwd)
   use <- case_.defer(fn() { case_.cleanup(thecase) })
 
-  case_.scaffold(thecase)
-  |> should.be_ok()
+  assert result.is_ok(case_.scaffold(thecase))
 
-  case_.main_module(
+  assert result.is_ok(case_.main_module(
     thecase,
     "
 pub fn main() {
   echo \"hello!\"
 }
 ",
-  )
-  |> should.be_ok()
+  ))
 
-  case_.gleam_check(thecase)
-  |> should.be_ok()
+  assert result.is_ok(case_.gleam_check(thecase))
 }
 
 pub fn case_check_error_test() {
@@ -44,21 +40,18 @@ pub fn case_check_error_test() {
   let thecase = case_.Case(pwd)
   use <- case_.defer(fn() { case_.cleanup(thecase) })
 
-  case_.scaffold(thecase)
-  |> should.be_ok()
+  assert result.is_ok(case_.scaffold(thecase))
 
-  case_.main_module(
+  assert result.is_ok(case_.main_module(
     thecase,
     "
 pub fn main() -> Int {
   echo \"hello!\"
 }
 ",
-  )
-  |> should.be_ok()
+  ))
 
-  case_.gleam_check(thecase)
-  |> should.be_error()
+  assert result.is_error(case_.gleam_check(thecase))
 }
 
 pub fn case_run_with_deps_test() {
@@ -66,13 +59,11 @@ pub fn case_run_with_deps_test() {
   let thecase = case_.Case(pwd)
   use <- case_.defer(fn() { case_.cleanup(thecase) })
 
-  case_.scaffold(thecase)
-  |> should.be_ok()
+  assert result.is_ok(case_.scaffold(thecase))
 
-  case_.install_dep(thecase, "argv")
-  |> should.be_ok()
+  assert result.is_ok(case_.install_dep(thecase, "argv"))
 
-  case_.main_module(
+  assert result.is_ok(case_.main_module(
     thecase,
     "
 import gleam/io
@@ -85,16 +76,12 @@ pub fn main() {
   }
 }
 ",
-  )
-  |> should.be_ok()
+  ))
 
-  case_.gleam_check(thecase)
-  |> should.be_ok()
+  assert result.is_ok(case_.gleam_check(thecase))
 
-  case_.gleam_build(thecase)
-  |> should.be_ok()
+  assert result.is_ok(case_.gleam_build(thecase))
 
-  echo pwd
-  case_.gleam_run(thecase, ["--no-print-progress", "test"])
-  |> should.equal(Ok("test\n"))
+  assert case_.gleam_run(thecase, ["--no-print-progress", "test"])
+    == Ok("test\n")
 }
