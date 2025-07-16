@@ -29,6 +29,15 @@ pub type Model {
   Gemini25pro
 }
 
+pub const all_models = [
+  GPT4o,
+  O4mini,
+  Claude37Sonnet,
+  ClaudeSonnet4,
+  Gemini25flash,
+  Gemini25pro,
+]
+
 pub fn prompt(
   model: Model,
   system: String,

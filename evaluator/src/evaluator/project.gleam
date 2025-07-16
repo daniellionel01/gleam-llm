@@ -89,7 +89,8 @@ pub fn cleanup(project: Project) {
   simplifile.delete_all([project.pwd])
 }
 
-pub fn defer(cleanup: fn() -> a, body: fn() -> b) {
-  body()
+pub fn defer(cleanup: fn() -> a, body: fn() -> b) -> b {
+  let r = body()
   cleanup()
+  r
 }
