@@ -6,7 +6,7 @@ pub fn main() -> Nil {
   gleeunit.main()
 }
 
-pub fn projectscaffold_test() {
+pub fn project_scaffold_test() {
   let pwd = project.tmp_pwd()
   let project = project.Project(pwd)
   use <- project.defer(fn() { project.cleanup(project) })
@@ -16,7 +16,7 @@ pub fn projectscaffold_test() {
   project.cleanup(project)
 }
 
-pub fn projectcheck_successfull_test() {
+pub fn project_check_successfull_test() {
   let pwd = project.tmp_pwd()
   let project = project.Project(pwd)
   use <- project.defer(fn() { project.cleanup(project) })
@@ -35,7 +35,7 @@ pub fn main() {
   assert result.is_ok(project.gleam_check(project))
 }
 
-pub fn projectcheck_error_test() {
+pub fn project_check_error_test() {
   let pwd = project.tmp_pwd()
   let project = project.Project(pwd)
   use <- project.defer(fn() { project.cleanup(project) })
@@ -54,7 +54,7 @@ pub fn main() -> Int {
   assert result.is_error(project.gleam_check(project))
 }
 
-pub fn projectrun_with_deps_test() {
+pub fn project_run_with_deps_test() {
   let pwd = project.tmp_pwd()
   let project = project.Project(pwd)
   use <- project.defer(fn() { project.cleanup(project) })
