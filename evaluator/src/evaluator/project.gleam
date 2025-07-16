@@ -12,29 +12,29 @@ version = \"1.0.0\"
 gleam_stdlib = \">= 0.44.0 and < 2.0.0\"
 "
 
-pub type Case {
-  Case(pwd: String)
+pub type Project {
+  Project(pwd: String)
 }
 
-pub fn scaffold(case_: Case) {
-  let src_dir = filepath.join(case_.pwd, "src")
-  let test_dir = filepath.join(case_.pwd, "test")
+pub fn scaffold(project: Project) {
+  let src_dir = filepath.join(project.pwd, "src")
+  let test_dir = filepath.join(project.pwd, "test")
   let assert Ok(_) = simplifile.create_directory_all(src_dir)
   let assert Ok(_) = simplifile.create_directory_all(test_dir)
 
   let assert Ok(_) =
-    simplifile.write(gleam_toml, to: filepath.join(case_.pwd, "gleam.toml"))
+    simplifile.write(gleam_toml, to: filepath.join(project.pwd, "gleam.toml"))
 }
 
-pub fn main_module(case_: Case, contents: String) {
-  let src_dir = filepath.join(case_.pwd, "src")
+pub fn main_module(project: Project, contents: String) {
+  let src_dir = filepath.join(project.pwd, "src")
   let assert Ok(_) =
     simplifile.write(contents, to: filepath.join(src_dir, "app.gleam"))
 }
 
-pub fn install_dep(case_: Case, dep: String) -> Result(String, Nil) {
+pub fn install_dep(project: Project, dep: String) -> Result(String, Nil) {
   let out =
-    shellout.command(run: "gleam", with: ["add", dep], in: case_.pwd, opt: [])
+    shellout.command(run: "gleam", with: ["add", dep], in: project.pwd, opt: [])
 
   case out {
     Error(_) -> Error(Nil)
@@ -50,9 +50,9 @@ pub fn tmp_pwd() {
   "/tmp/" <> uid
 }
 
-pub fn gleam_check(case_: Case) -> Result(String, String) {
+pub fn gleam_check(project: Project) -> Result(String, String) {
   let out =
-    shellout.command(run: "gleam", with: ["check"], in: case_.pwd, opt: [])
+    shellout.command(run: "gleam", with: ["check"], in: project.pwd, opt: [])
 
   case out {
     Error(#(_, err)) -> Error(err)
@@ -60,9 +60,9 @@ pub fn gleam_check(case_: Case) -> Result(String, String) {
   }
 }
 
-pub fn gleam_build(case_: Case) -> Result(Nil, String) {
+pub fn gleam_build(project: Project) -> Result(Nil, String) {
   let out =
-    shellout.command(run: "gleam", with: ["build"], in: case_.pwd, opt: [])
+    shellout.command(run: "gleam", with: ["build"], in: project.pwd, opt: [])
 
   case out {
     Error(#(_, err)) -> Error(err)
@@ -70,12 +70,12 @@ pub fn gleam_build(case_: Case) -> Result(Nil, String) {
   }
 }
 
-pub fn gleam_run(case_: Case, args: List(String)) -> Result(String, String) {
+pub fn gleam_run(project: Project, args: List(String)) -> Result(String, String) {
   let out =
     shellout.command(
       run: "gleam",
       with: ["run", ..args],
-      in: case_.pwd,
+      in: project.pwd,
       opt: [],
     )
 
@@ -85,8 +85,8 @@ pub fn gleam_run(case_: Case, args: List(String)) -> Result(String, String) {
   }
 }
 
-pub fn cleanup(case_: Case) {
-  simplifile.delete_all([case_.pwd])
+pub fn cleanup(project: Project) {
+  simplifile.delete_all([project.pwd])
 }
 
 pub fn defer(cleanup: fn() -> a, body: fn() -> b) {

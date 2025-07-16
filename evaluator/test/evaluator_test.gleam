@@ -1,4 +1,4 @@
-import evaluator/case_
+import evaluator/project
 import gleam/result
 import gleeunit
 
@@ -6,25 +6,25 @@ pub fn main() -> Nil {
   gleeunit.main()
 }
 
-pub fn case_scaffold_test() {
-  let pwd = case_.tmp_pwd()
-  let thecase = case_.Case(pwd)
-  use <- case_.defer(fn() { case_.cleanup(thecase) })
+pub fn projectscaffold_test() {
+  let pwd = project.tmp_pwd()
+  let project = project.Project(pwd)
+  use <- project.defer(fn() { project.cleanup(project) })
 
-  assert result.is_ok(case_.scaffold(thecase))
+  assert result.is_ok(project.scaffold(project))
 
-  case_.cleanup(thecase)
+  project.cleanup(project)
 }
 
-pub fn case_check_successfull_test() {
-  let pwd = case_.tmp_pwd()
-  let thecase = case_.Case(pwd)
-  use <- case_.defer(fn() { case_.cleanup(thecase) })
+pub fn projectcheck_successfull_test() {
+  let pwd = project.tmp_pwd()
+  let project = project.Project(pwd)
+  use <- project.defer(fn() { project.cleanup(project) })
 
-  assert result.is_ok(case_.scaffold(thecase))
+  assert result.is_ok(project.scaffold(project))
 
-  assert result.is_ok(case_.main_module(
-    thecase,
+  assert result.is_ok(project.main_module(
+    project,
     "
 pub fn main() {
   echo \"hello!\"
@@ -32,18 +32,18 @@ pub fn main() {
 ",
   ))
 
-  assert result.is_ok(case_.gleam_check(thecase))
+  assert result.is_ok(project.gleam_check(project))
 }
 
-pub fn case_check_error_test() {
-  let pwd = case_.tmp_pwd()
-  let thecase = case_.Case(pwd)
-  use <- case_.defer(fn() { case_.cleanup(thecase) })
+pub fn projectcheck_error_test() {
+  let pwd = project.tmp_pwd()
+  let project = project.Project(pwd)
+  use <- project.defer(fn() { project.cleanup(project) })
 
-  assert result.is_ok(case_.scaffold(thecase))
+  assert result.is_ok(project.scaffold(project))
 
-  assert result.is_ok(case_.main_module(
-    thecase,
+  assert result.is_ok(project.main_module(
+    project,
     "
 pub fn main() -> Int {
   echo \"hello!\"
@@ -51,20 +51,20 @@ pub fn main() -> Int {
 ",
   ))
 
-  assert result.is_error(case_.gleam_check(thecase))
+  assert result.is_error(project.gleam_check(project))
 }
 
-pub fn case_run_with_deps_test() {
-  let pwd = case_.tmp_pwd()
-  let thecase = case_.Case(pwd)
-  use <- case_.defer(fn() { case_.cleanup(thecase) })
+pub fn projectrun_with_deps_test() {
+  let pwd = project.tmp_pwd()
+  let project = project.Project(pwd)
+  use <- project.defer(fn() { project.cleanup(project) })
 
-  assert result.is_ok(case_.scaffold(thecase))
+  assert result.is_ok(project.scaffold(project))
 
-  assert result.is_ok(case_.install_dep(thecase, "argv"))
+  assert result.is_ok(project.install_dep(project, "argv"))
 
-  assert result.is_ok(case_.main_module(
-    thecase,
+  assert result.is_ok(project.main_module(
+    project,
     "
 import gleam/io
 import argv
@@ -78,10 +78,10 @@ pub fn main() {
 ",
   ))
 
-  assert result.is_ok(case_.gleam_check(thecase))
+  assert result.is_ok(project.gleam_check(project))
 
-  assert result.is_ok(case_.gleam_build(thecase))
+  assert result.is_ok(project.gleam_build(project))
 
-  assert case_.gleam_run(thecase, ["--no-print-progress", "test"])
+  assert project.gleam_run(project, ["--no-print-progress", "test"])
     == Ok("test\n")
 }
