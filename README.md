@@ -37,6 +37,8 @@ These are the cases we are going to let the LLM attempt to implement:
 - matrix multiplication
 - exercism challenge
 - advent of code challenge
+- something with generics and more complex type apis
+- a little auth library that works with hashes
 - web server that renders some html
 - web server json api
 - `use` utility (like given library)
