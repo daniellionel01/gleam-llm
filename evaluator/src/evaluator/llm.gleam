@@ -82,8 +82,12 @@ pub fn prompt(
     |> request.prepend_header("Content-Type", "application/json")
     |> auth_request(provider)
 
+  let config =
+    httpc.configure()
+    |> httpc.timeout(60_000)
+
   use resp <- result.try(
-    result.map_error(httpc.send(req), fn(e) { RequestError(e) }),
+    result.map_error(httpc.dispatch(config, req), fn(e) { RequestError(e) }),
   )
 
   let decoder = provider_decoder(provider)

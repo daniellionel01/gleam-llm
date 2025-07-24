@@ -5,7 +5,6 @@ import evaluator/case_.{
 import evaluator/llm
 import evaluator/project
 import given
-import gleam/dynamic/decode
 import gleam/io
 import gleam/json
 import gleam/list
@@ -19,6 +18,7 @@ const context = "
 You are a gleam programmer. You write code to satisfy a 'case' given to you.
 You output the code directly and it has to be contained in one file.
 The first line you output is the first line of code. No code splitting at all.
+Do not annotate your code with any comments.
 "
 
 pub fn evaluate_case(
@@ -69,6 +69,7 @@ fn run_case_for_all_models(case_: Case, validator: Validator) {
   use model <- list.map(llm.all_models)
   io.println("Evaluating Model: " <> llm.model_to_identifier(model))
   let assert Ok(#(program, eval)) = evaluate_case(case_, validator, model)
+  io.println("")
   Report(case_, program, model, eval)
 }
 
@@ -85,6 +86,24 @@ fn validator_1(stdout: String) -> Bool {
   |> string.lowercase()
   |> string.trim()
   == "hello, world!"
+}
+
+fn make_case_2() -> Case {
+  Case(
+    title: "Defer",
+    contents: "
+A program that demonstrates a 'defer' utility function. Write the function called 'defer' that can be used via the gleam `use` syntax.
+Demonstrate it by deferring a print of 'hello' and printing '1' before.
+",
+    deps: [],
+  )
+}
+
+fn validator_2(stdout: String) -> Bool {
+  stdout
+  |> string.lowercase()
+  |> string.trim()
+  == "1\nhello"
 }
 
 fn case_and_report_to_html(case_: Case, reports: List(Report)) {
@@ -120,10 +139,13 @@ pub fn main() {
   io.println("Evaluating Case 1...")
 
   let case_1 = make_case_1()
+  let case_2 = make_case_2()
 
   // ### Use to generate new reports
   let reports_1 = run_case_for_all_models(case_1, validator_1)
-  let reports = [reports_1]
+  let reports_2 = run_case_for_all_models(case_2, validator_2)
+
+  let reports = [reports_1, reports_2]
   // ###
 
   // ### Use to use cached reports
@@ -133,7 +155,7 @@ pub fn main() {
   //     reports_json,
   //     using: decode.list(decode.list(case_.report_decoder())),
   //   )
-  // let assert [reports_1] = reports
+  // let assert [reports_1, reports_2] = reports
   // ###
 
   io.println("Storing Reports as JSON...")
@@ -159,7 +181,10 @@ pub fn main() {
         html.style([], css_reset),
         html.style([], style),
       ]),
-      html.body([], [case_and_report_to_html(case_1, reports_1)]),
+      html.body([], [
+        case_and_report_to_html(case_1, reports_1),
+        case_and_report_to_html(case_2, reports_2),
+      ]),
     ])
     |> element.to_document_string()
 
