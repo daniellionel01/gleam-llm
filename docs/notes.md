@@ -18,8 +18,9 @@
   - how many iterations should be the max. for a LLM to try?
 
 ## todo
-  - [ ] cache report results as json
+  - [x] cache report results as json
   - [ ] generated html report
+    - [ ] display case contents inside of accordion
     - [ ] charts how well certain models do over all cases
     - [ ] nicer styling & formatting
     - [ ] code highlighting
