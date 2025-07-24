@@ -121,18 +121,25 @@ pub fn main() {
 
   let case_1 = make_case_1()
 
-  // let reports_1 = run_case_for_all_models(case_1, validator_1)
+  let reports_1 = run_case_for_all_models(case_1, validator_1)
+  let reports = [reports_1]
 
-  let assert Ok(reports_1_json) = simplifile.read("./reports1.json")
-  let assert Ok(reports_1) =
-    json.parse(reports_1_json, using: decode.list(case_.report_decoder()))
+  // let assert Ok(reports_json) = simplifile.read("./reports.json")
+  // let assert Ok(reports) =
+  //   json.parse(
+  //     reports_json,
+  //     using: decode.list(decode.list(case_.report_decoder())),
+  //   )
+  // let assert [reports_1] = reports
 
   io.println("Storing Reports as JSON...")
 
   let generated_json =
-    json.array(reports_1, of: case_.report_to_json)
+    json.array(reports, of: fn(reports) {
+      json.array(reports, of: case_.report_to_json)
+    })
     |> json.to_string()
-  let assert Ok(_) = simplifile.write("./reports1.json", generated_json)
+  let assert Ok(_) = simplifile.write("./reports.json", generated_json)
 
   io.println("Generating HTML Report...")
 
