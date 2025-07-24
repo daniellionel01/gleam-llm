@@ -8,8 +8,6 @@
 
 ## tests
 
-- build twice to avoid build warnings
-
 - metrics
   - how many iterations did it take?
   - how much information is necessary?
@@ -19,7 +17,16 @@
 - open questions:
   - how many iterations should be the max. for a LLM to try?
 
+## todo
+  - [ ] cache report results as json
+  - [ ] generated html report
+    - [ ] charts how well certain models do over all cases
+    - [ ] nicer styling & formatting
+    - [ ] code highlighting
+  - [ ] allow for multiple iterations for model on case and give it gleam compiler output to allow it to attempt and fix its own mistake/s
+
 ## miscelleaneous
+
 
 - baseline with other languages
   - python (with uv)

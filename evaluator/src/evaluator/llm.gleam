@@ -29,6 +29,30 @@ pub type Model {
   Gemini25pro
 }
 
+pub fn model_decoder() -> decode.Decoder(Model) {
+  use variant <- decode.then(decode.string)
+  case variant {
+    "g_p_t4o" -> decode.success(GPT4o)
+    "o4mini" -> decode.success(O4mini)
+    "claude37_sonnet" -> decode.success(Claude37Sonnet)
+    "claude_sonnet4" -> decode.success(ClaudeSonnet4)
+    "gemini25flash" -> decode.success(Gemini25flash)
+    "gemini25pro" -> decode.success(Gemini25pro)
+    _ -> decode.failure(GPT4o, "Model")
+  }
+}
+
+pub fn model_to_json(model: Model) -> json.Json {
+  case model {
+    GPT4o -> json.string("g_p_t4o")
+    O4mini -> json.string("o4mini")
+    Claude37Sonnet -> json.string("claude37_sonnet")
+    ClaudeSonnet4 -> json.string("claude_sonnet4")
+    Gemini25flash -> json.string("gemini25flash")
+    Gemini25pro -> json.string("gemini25pro")
+  }
+}
+
 pub const all_models = [
   GPT4o,
   O4mini,

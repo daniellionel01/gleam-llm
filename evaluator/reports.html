@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1" name="viewport"><title>Gleam LLM Report</title><style>
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent font size inflation */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+/* Remove default margin in favour of better control in authored CSS */
+body, h1, h2, h3, h4, p,
+figure, blockquote, dl, dd {
+  margin-block-end: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Set shorter line heights on headings and interactive elements */
+h1, h2, h3, h4,
+button, input, label {
+  line-height: 1.1;
+}
+
+/* Balance text wrapping on headings */
+h1, h2,
+h3, h4 {
+  text-wrap: balance;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+  color: currentColor;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input, button,
+textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Make sure textareas without a rows attribute are not tiny */
+textarea:not([rows]) {
+  min-height: 10em;
+}
+
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 5ex;
+}
+</style><style>
+html,body {
+  font-family: Arial, sans-serif;
+}
+
+.eval-red {
+  color: red;
+}
+.eval-green {
+  color: green;
+}
+</style></head><body><details><summary><span>Case: Hello World!</span></summary><div><details><summary><span>Implementation: gpt-4o-2024-11-20</span></summary><div><pre><code>python
+print(&quot;hello, world!&quot;)</code></pre><p class="eval-red">compile error!</p></div></details><details><summary><span>Implementation: o4-mini-2025-04-16</span></summary><div><pre><code>import gleam/io
+
+pub fn main() {
+  io.println(&quot;hello, world!&quot;)
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: claude-3-7-sonnet-20250219</span></summary><div><pre><code>pub fn main() {
+  println(&quot;hello, world!&quot;)
+}</code></pre><p class="eval-red">compile error!</p></div></details><details><summary><span>Implementation: claude-sonnet-4-20250514</span></summary><div><pre><code>import gleam/io
+
+pub fn main() {
+  io.println(&quot;hello, world!&quot;)
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: gemini-2.5-flash-preview-05-20</span></summary><div><pre><code>import gleam/io
+
+pub fn main() {
+  io.println(&quot;hello, world!&quot;)
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: gemini-2.5-pro-preview-06-05</span></summary><div><pre><code>import gleam/io
+
+pub fn main() {
+  io.println(&quot;hello, world!&quot;)
+}</code></pre><p class="eval-green">valid: true</p></div></details></div></details></body></html>
