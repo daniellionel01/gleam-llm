@@ -63,6 +63,7 @@ pub fn gleam_check(project: Project) -> Result(String, String) {
 pub fn gleam_build(project: Project) -> Result(Nil, String) {
   let out =
     shellout.command(run: "gleam", with: ["build"], in: project.pwd, opt: [])
+  let _ = echo out
 
   case out {
     Error(#(_, err)) -> Error(err)

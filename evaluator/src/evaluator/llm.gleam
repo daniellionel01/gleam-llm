@@ -40,8 +40,8 @@ pub const all_models = [
 
 pub fn prompt(
   model: Model,
-  system: String,
-  user: String,
+  system system: String,
+  user user: String,
 ) -> Result(String, LLMError) {
   let provider = get_provider(model)
 

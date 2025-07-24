@@ -21,6 +21,11 @@
 
 ## miscelleaneous
 
+- baseline with other languages
+  - python (with uv)
+  - javascript
+  - golang
+
 - adjust max_tokens in anthropic api?
 
 - html to markdown

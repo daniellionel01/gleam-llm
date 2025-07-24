@@ -1,5 +1,8 @@
 set dotenv-load
 
+run:
+  gleam run
+
 test:
   gleam test
 
