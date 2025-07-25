@@ -87,18 +87,19 @@ pub fn prompt(
     |> httpc.timeout(60_000)
 
   use resp <- result.try(
-    result.map_error(httpc.dispatch(config, req), fn(e) { RequestError(e) }),
+    httpc.dispatch(config, req)
+    |> result.map_error(fn(e) { RequestError(e) }),
   )
 
   let decoder = provider_decoder(provider)
   use data <- result.try(
-    result.map_error(json.parse(from: resp.body, using: decoder), fn(err) {
-      ResponseError(err)
-    }),
+    json.parse(from: resp.body, using: decoder)
+    |> result.map_error(fn(err) { ResponseError(err) }),
   )
 
   use choice <- result.try(
-    result.map_error(flatten_decoded_result(data), fn(_) { EmptyResponseError }),
+    flatten_decoded_result(data)
+    |> result.map_error(fn(_) { EmptyResponseError }),
   )
 
   Ok(choice)
