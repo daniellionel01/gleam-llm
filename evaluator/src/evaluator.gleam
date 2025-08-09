@@ -313,7 +313,9 @@ pub fn main() {
                         ]),
                       ]),
                       html.div([attribute.class("body")], [
-                        html.pre([], [html.code([], [html.text("code")])]),
+                        html.pre([], [
+                          html.code([], [html.text(report.program)]),
+                        ]),
                       ]),
                     ]),
                   ],
