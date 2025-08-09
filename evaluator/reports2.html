@@ -36,6 +36,7 @@
         border-radius: 6px;
         text-decoration: none;
         color: #000;
+        border: 1px solid transparent;
       }
       .sidebar .case-link:hover {
         background: #f3f3f3;
@@ -52,13 +53,21 @@
         position: absolute;
         left: -9999px;
       }
-      /* Show the right section when a radio is checked.
-     IMPORTANT: target the sibling .app first, then descend. */
+
+      /* Show the right section when a radio is checked */
       #case-hello:checked ~ .app #view-hello {
         display: block;
       }
       #case-defer:checked ~ .app #view-defer {
         display: block;
+      }
+
+      /* Highlight the active case in the sidebar (no JS) */
+      #case-hello:checked ~ .app .sidebar label[for="case-hello"],
+      #case-defer:checked ~ .app .sidebar label[for="case-defer"] {
+        background: #e9f3ff;
+        border: 1px solid #bcd7ff;
+        font-weight: 600;
       }
 
       /* Table */
@@ -255,8 +264,7 @@
       </main>
     </div>
 
-    <!-- Modals (pure CSS via :target). Each has its own anchor id -->
-    <!-- Hello World! code -->
+    <!-- Modals -->
     <div id="code-hello-gpt4o" class="modal" aria-modal="true" role="dialog">
       <div class="box">
         <header>
@@ -353,7 +361,6 @@ pub fn main() {
       </div>
     </div>
 
-    <!-- Defer code -->
     <div id="code-defer-gpt4o" class="modal" aria-modal="true" role="dialog">
       <div class="box">
         <header>
