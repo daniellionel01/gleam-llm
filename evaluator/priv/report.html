@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1" name="viewport"><title>Gleam LLM Report</title><style>
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Prevent font size inflation */
+html {
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+}
+
+/* Remove default margin in favour of better control in authored CSS */
+body, h1, h2, h3, h4, p,
+figure, blockquote, dl, dd {
+  margin-block-end: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+/* Set shorter line heights on headings and interactive elements */
+h1, h2, h3, h4,
+button, input, label {
+  line-height: 1.1;
+}
+
+/* Balance text wrapping on headings */
+h1, h2,
+h3, h4 {
+  text-wrap: balance;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  text-decoration-skip-ink: auto;
+  color: currentColor;
+}
+
+/* Make images easier to work with */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inherit fonts for inputs and buttons */
+input, button,
+textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Make sure textareas without a rows attribute are not tiny */
+textarea:not([rows]) {
+  min-height: 10em;
+}
+
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 5ex;
+}
+</style><style>
+html,
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+}
+.app {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+/* Sidebar */
+.sidebar {
+  border-right: 1px solid #ddd;
+  padding: 12px;
+}
+.sidebar h2 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.sidebar .case-link {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.sidebar .case-link:hover {
+  background: #f3f3f3;
+}
+/* Main */
+.main {
+  padding: 16px;
+}
+.case {
+  display: none;
+}
+/* Radios (hide) */
+input[name="case"] {
+  position: absolute;
+  left: -9999px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+th {
+  background: #fafafa;
+}
+.valid-true {
+  color: #0a6e0a;
+  font-weight: 600;
+}
+.valid-false {
+  color: #b00000;
+  font-weight: 600;
+}
+.btn {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #000;
+  background: #f7f7f7;
+}
+.btn:hover {
+  background: #eee;
+}
+/* Modal via :target */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal:target {
+  display: flex;
+}
+.modal .box {
+  background: #fff;
+  max-width: 900px;
+  width: 100%;
+  max-height: 85vh;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: auto;
+}
+.modal header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+.modal header h3 {
+  font-size: 15px;
+  margin: 0;
+}
+.modal .body {
+  padding: 12px;
+}
+.modal .close {
+  text-decoration: none;
+  padding: 4px 8px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  color: #000;
+  background: #f7f7f7;
+}
+pre {
+  margin: 0;
+  white-space: pre;
+  overflow: auto;
+}
+</style><style>
+          #case-select:has(#case-hello:checked) #view-hello { display:block; }
+          #case-select:has(#case-hello:checked) .sidebar label[for="case-hello"] {
+            background:#e9f3ff; border:1px solid #bcd7ff; font-weight:600;
+          }
+        
+
+          #case-select:has(#case-defer:checked) #view-defer { display:block; }
+          #case-select:has(#case-defer:checked) .sidebar label[for="case-defer"] {
+            background:#e9f3ff; border:1px solid #bcd7ff; font-weight:600;
+          }
+        </style><link href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/atom-one-light.min.css" rel="stylesheet"><script src="./js/highlight.min.js"></script><script src="./js/highlight-gleam.js"></script><script>
+          window.addEventListener("DOMContentLoaded", () => {
+            if (window.hljsDefineGleam) {
+              hljs.registerLanguage("gleam", window.hljsDefineGleam);
+            }
+            document.querySelectorAll("pre code").forEach((el) => {
+              el.classList.add("language-gleam");
+            });
+            hljs.configure({ languages: ["gleam"] });
+            hljs.highlightAll();
+          });
+</script></head><body><div id="case-select"><div class="app"><aside class="sidebar"><h2>Cases</h2><label class="case-link" for="case-hello">Hello World!</label><label class="case-link" for="case-defer">Defer</label></aside><main class="main"><section class="case" id="view-hello"><h1 style="font-size: 18px; margin: 0 0 12px">Case: Hello World!</h1><table><thead><tr><th style="width: 40%">model</th><th style="width: 10%">valid</th><th>code</th></tr></thead><tbody><tr><td>gpt-4o-2024-11-20</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gpt-4o-2024-11-20">View code</a></td></tr><tr><td>o4-mini-2025-04-16</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-o4-mini-2025-04-16">View code</a></td></tr><tr><td>claude-3-7-sonnet-20250219</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-claude-3-7-sonnet-20250219">View code</a></td></tr><tr><td>claude-sonnet-4-20250514</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-claude-sonnet-4-20250514">View code</a></td></tr><tr><td>gemini-2.5-flash-preview-05-20</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gemini-2.5-flash-preview-05-20">View code</a></td></tr><tr><td>gemini-2.5-pro-preview-06-05</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gemini-2.5-pro-preview-06-05">View code</a></td></tr></tbody></table></section><section class="case" id="view-defer"><h1 style="font-size: 18px; margin: 0 0 12px">Case: Defer</h1><table><thead><tr><th style="width: 40%">model</th><th style="width: 10%">valid</th><th>code</th></tr></thead><tbody><tr><td>gpt-4o-2024-11-20</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-gpt-4o-2024-11-20">View code</a></td></tr><tr><td>o4-mini-2025-04-16</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-o4-mini-2025-04-16">View code</a></td></tr><tr><td>claude-3-7-sonnet-20250219</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-claude-3-7-sonnet-20250219">View code</a></td></tr><tr><td>claude-sonnet-4-20250514</td><td class="valid-true">true</td><td><a class="btn" href="#code-defer-claude-sonnet-4-20250514">View code</a></td></tr><tr><td>gemini-2.5-flash-preview-05-20</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-gemini-2.5-flash-preview-05-20">View code</a></td></tr><tr><td>gemini-2.5-pro-preview-06-05</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-gemini-2.5-pro-preview-06-05">View code</a></td></tr></tbody></table></section></main><div><div aria-modal="true" class="modal" id="code-hello-gpt-4o-2024-11-20" role="dialog"><div class="box"><header><h3>Hello World! — gpt-4o-2024-11-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-hello-o4-mini-2025-04-16" role="dialog"><div class="box"><header><h3>Hello World! — o4-mini-2025-04-16</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-hello-claude-3-7-sonnet-20250219" role="dialog"><div class="box"><header><h3>Hello World! — claude-3-7-sonnet-20250219</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-hello-claude-sonnet-4-20250514" role="dialog"><div class="box"><header><h3>Hello World! — claude-sonnet-4-20250514</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-hello-gemini-2.5-flash-preview-05-20" role="dialog"><div class="box"><header><h3>Hello World! — gemini-2.5-flash-preview-05-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-hello-gemini-2.5-pro-preview-06-05" role="dialog"><div class="box"><header><h3>Hello World! — gemini-2.5-pro-preview-06-05</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gpt-4o-2024-11-20" role="dialog"><div class="box"><header><h3>Defer — gpt-4o-2024-11-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-o4-mini-2025-04-16" role="dialog"><div class="box"><header><h3>Defer — o4-mini-2025-04-16</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-claude-3-7-sonnet-20250219" role="dialog"><div class="box"><header><h3>Defer — claude-3-7-sonnet-20250219</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-claude-sonnet-4-20250514" role="dialog"><div class="box"><header><h3>Defer — claude-sonnet-4-20250514</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gemini-2.5-flash-preview-05-20" role="dialog"><div class="box"><header><h3>Defer — gemini-2.5-flash-preview-05-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gemini-2.5-pro-preview-06-05" role="dialog"><div class="box"><header><h3>Defer — gemini-2.5-pro-preview-06-05</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>code</code></pre></div></div></div></div></div><input checked id="case-hello" name="case" type="radio"><input checked id="case-defer" name="case" type="radio"></div></body></html>

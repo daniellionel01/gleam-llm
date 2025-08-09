@@ -16,6 +16,10 @@ import lustre/element
 import lustre/element/html
 import simplifile
 
+const cache_path = "./priv/_cache/reports.json"
+
+const report_path = "./priv/report.html"
+
 const context = "
 You are a gleam programmer. You write code to satisfy a 'case' given to you.
 You output the code directly and it has to be contained in one file.
@@ -77,6 +81,7 @@ fn run_case_for_all_models(case_: Case, validator: Validator) {
 
 fn make_case_1() -> Case {
   Case(
+    id: "hello",
     title: "Hello World!",
     contents: "A program that outputs 'hello, world!'",
     deps: [],
@@ -92,6 +97,7 @@ fn validator_1(stdout: String) -> Bool {
 
 fn make_case_2() -> Case {
   Case(
+    id: "defer",
     title: "Defer",
     contents: "
 A program that demonstrates a 'defer' utility function. Write the function called 'defer' that can be used via the gleam `use` syntax.
@@ -108,35 +114,6 @@ fn validator_2(stdout: String) -> Bool {
   == "1\nhello"
 }
 
-fn case_and_report_to_html(case_: Case, reports: List(Report)) {
-  html.details([], [
-    html.summary([], [html.span([], [html.text("Case: " <> case_.title)])]),
-    html.div([attribute.class("implementation")], {
-      use report <- list.map(reports)
-
-      let eval = case report.eval {
-        CompileError -> #("eval-red", "compile error!")
-        Invalid -> #("eval-red", "valid: false")
-        Valid -> #("eval-green", "valid: true")
-      }
-
-      html.details([], [
-        html.summary([], [
-          html.span([], [
-            html.text(
-              "Implementation: " <> llm.model_to_identifier(report.model),
-            ),
-          ]),
-        ]),
-        html.div([attribute.class("implementation-body")], [
-          html.pre([], [html.code([], [html.text(report.program)])]),
-          html.p([attribute.class(eval.0)], [html.text(eval.1)]),
-        ]),
-      ])
-    }),
-  ])
-}
-
 pub fn main() {
   let case_1 = make_case_1()
   let case_2 = make_case_2()
@@ -149,7 +126,7 @@ pub fn main() {
   // ###
 
   // ### Use to use cached reports
-  let assert Ok(reports_json) = simplifile.read("./reports.json")
+  let assert Ok(reports_json) = simplifile.read(cache_path)
   let assert Ok(reports) =
     json.parse(
       reports_json,
@@ -165,9 +142,15 @@ pub fn main() {
       json.array(reports, of: case_.report_to_json)
     })
     |> json.to_string()
-  let assert Ok(_) = simplifile.write("./reports.json", generated_json)
+  let assert Ok(_) = simplifile.write(cache_path, generated_json)
 
   io.println("Generating HTML Report...")
+
+  let cases_and_reports = [
+    #(case_1, reports_1),
+    #(case_2, reports_2),
+  ]
+  let cases = list.map(cases_and_reports, fn(c_r) { c_r.0 })
 
   let html =
     html.html([attribute.lang("en")], [
@@ -180,33 +163,309 @@ pub fn main() {
         html.title([], "Gleam LLM Report"),
         html.style([], constants.css_reset),
         html.style([], style),
+
+        html.style(
+          [],
+          cases
+            |> list.map(fn(case_) { "
+          #case-select:has(#case-" <> case_.id <> ":checked) #view-" <> case_.id <> " { display:block; }
+          #case-select:has(#case-" <> case_.id <> ":checked) .sidebar label[for=\"case-" <> case_.id <> "\"] {
+            background:#e9f3ff; border:1px solid #bcd7ff; font-weight:600;
+          }
+        " })
+            |> string.join("\n"),
+        ),
+
+        html.link([
+          attribute.href(
+            "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/atom-one-light.min.css",
+          ),
+          attribute.rel("stylesheet"),
+        ]),
+        html.script([attribute.src("./js/highlight.min.js")], ""),
+        html.script([attribute.src("./js/highlight-gleam.js")], ""),
+        html.script(
+          [],
+          "
+          window.addEventListener(\"DOMContentLoaded\", () => {
+            if (window.hljsDefineGleam) {
+              hljs.registerLanguage(\"gleam\", window.hljsDefineGleam);
+            }
+            document.querySelectorAll(\"pre code\").forEach((el) => {
+              el.classList.add(\"language-gleam\");
+            });
+            hljs.configure({ languages: [\"gleam\"] });
+            hljs.highlightAll();
+          });
+",
+        ),
       ]),
       html.body([], [
-        case_and_report_to_html(case_1, reports_1),
-        case_and_report_to_html(case_2, reports_2),
+        html.div([attribute.id("case-select")], [
+          html.div([attribute.class("app")], [
+            html.aside([attribute.class("sidebar")], [
+              html.h2([], [html.text("Cases")]),
+              ..{
+                use case_ <- list.map(cases)
+                html.label(
+                  [
+                    attribute.for("case-" <> case_.id),
+                    attribute.class("case-link"),
+                  ],
+                  [html.text(case_.title)],
+                )
+              }
+            ]),
+            html.main([attribute.class("main")], {
+              use #(case_, reports) <- list.map(cases_and_reports)
+              html.section(
+                [attribute.class("case"), attribute.id("view-" <> case_.id)],
+                [
+                  html.h1(
+                    [
+                      attribute.attribute(
+                        "style",
+                        "font-size: 18px; margin: 0 0 12px",
+                      ),
+                    ],
+                    [html.text("Case: " <> case_.title)],
+                  ),
+                  html.table([], [
+                    html.thead([], [
+                      html.tr([], [
+                        html.th([attribute.attribute("style", "width: 40%")], [
+                          html.text("model"),
+                        ]),
+                        html.th([attribute.attribute("style", "width: 10%")], [
+                          html.text("valid"),
+                        ]),
+                        html.th([], [html.text("code")]),
+                      ]),
+                    ]),
+                    html.tbody([], {
+                      use report <- list.map(reports)
+                      let model = llm.model_to_identifier(report.model)
+
+                      html.tr([], [
+                        html.td([], [
+                          html.text(model),
+                        ]),
+                        {
+                          case report.eval {
+                            CompileError ->
+                              html.td([attribute.class("valid-false")], [
+                                html.text("false"),
+                              ])
+                            Invalid ->
+                              html.td([attribute.class("valid-false")], [
+                                html.text("false"),
+                              ])
+                            Valid ->
+                              html.td([attribute.class("valid-true")], [
+                                html.text("true"),
+                              ])
+                          }
+                        },
+                        html.td([], [
+                          html.a(
+                            [
+                              attribute.href(
+                                "#code-" <> case_.id <> "-" <> model,
+                              ),
+                              attribute.class("btn"),
+                            ],
+                            [html.text("View code")],
+                          ),
+                        ]),
+                      ])
+                    }),
+                  ]),
+                ],
+              )
+            }),
+            html.div(
+              [],
+              list.flatten({
+                use #(case_, reports) <- list.map(cases_and_reports)
+                use report <- list.map(reports)
+
+                let model = llm.model_to_identifier(report.model)
+
+                html.div(
+                  [
+                    attribute.role("dialog"),
+                    attribute.attribute("aria-modal", "true"),
+                    attribute.class("modal"),
+                    attribute.id("code-" <> case_.id <> "-" <> model),
+                  ],
+                  [
+                    html.div([attribute.class("box")], [
+                      html.header([], [
+                        html.h3([], [
+                          html.text(case_.title <> " — " <> model),
+                        ]),
+                        html.a([attribute.href("#"), attribute.class("close")], [
+                          html.text("Close"),
+                        ]),
+                      ]),
+                      html.div([attribute.class("body")], [
+                        html.pre([], [html.code([], [html.text("code")])]),
+                      ]),
+                    ]),
+                  ],
+                )
+              }),
+            ),
+          ]),
+          ..{
+            use case_ <- list.map(cases)
+            html.input([
+              attribute.checked(True),
+              attribute.id("case-" <> case_.id),
+              attribute.name("case"),
+              attribute.type_("radio"),
+            ])
+          }
+        ]),
       ]),
     ])
     |> element.to_document_string()
 
-  let assert Ok(_) = simplifile.write("./reports.html", html)
+  let assert Ok(_) = simplifile.write(report_path, html)
 }
 
 const style = "
-html,body {
-  font-family: Arial, sans-serif;
+html,
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Arial,
+    sans-serif;
+}
+.app {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+/* Sidebar */
+.sidebar {
+  border-right: 1px solid #ddd;
+  padding: 12px;
+}
+.sidebar h2 {
+  font-size: 14px;
+  margin: 0 0 8px;
+}
+.sidebar .case-link {
+  display: block;
+  padding: 6px 8px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #000;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+.sidebar .case-link:hover {
+  background: #f3f3f3;
+}
+/* Main */
+.main {
+  padding: 16px;
+}
+.case {
+  display: none;
+}
+/* Radios (hide) */
+input[name=\"case\"] {
+  position: absolute;
+  left: -9999px;
 }
 
-.eval-red {
-  color: red;
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
-.eval-green {
-  color: green;
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
 }
-
-.implementation {
-  padding-left: 1rem;
+th {
+  background: #fafafa;
 }
-.implementation-body {
-  padding-left: 1rem;
+.valid-true {
+  color: #0a6e0a;
+  font-weight: 600;
+}
+.valid-false {
+  color: #b00000;
+  font-weight: 600;
+}
+.btn {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #000;
+  background: #f7f7f7;
+}
+.btn:hover {
+  background: #eee;
+}
+/* Modal via :target */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal:target {
+  display: flex;
+}
+.modal .box {
+  background: #fff;
+  max-width: 900px;
+  width: 100%;
+  max-height: 85vh;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: auto;
+}
+.modal header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+.modal header h3 {
+  font-size: 15px;
+  margin: 0;
+}
+.modal .body {
+  padding: 12px;
+}
+.modal .close {
+  text-decoration: none;
+  padding: 4px 8px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  color: #000;
+  background: #f7f7f7;
+}
+pre {
+  margin: 0;
+  white-space: pre;
+  overflow: auto;
 }
 "

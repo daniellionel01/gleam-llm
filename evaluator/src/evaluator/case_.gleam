@@ -37,19 +37,21 @@ pub type Validator =
   fn(String) -> Bool
 
 pub type Case {
-  Case(title: String, contents: String, deps: List(String))
+  Case(id: String, title: String, contents: String, deps: List(String))
 }
 
 fn case_decoder() -> decode.Decoder(Case) {
+  use id <- decode.field("id", decode.string)
   use title <- decode.field("title", decode.string)
   use contents <- decode.field("contents", decode.string)
   use deps <- decode.field("deps", decode.list(decode.string))
-  decode.success(Case(title:, contents:, deps:))
+  decode.success(Case(id:, title:, contents:, deps:))
 }
 
 fn case_to_json(case_: Case) -> json.Json {
-  let Case(title:, contents:, deps:) = case_
+  let Case(id:, title:, contents:, deps:) = case_
   json.object([
+    #("id", json.string(id)),
     #("title", json.string(title)),
     #("contents", json.string(contents)),
     #("deps", json.array(deps, json.string)),
