@@ -4,6 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Implementation Validity by Case</title>
+
+    <!-- Minimal styles -->
     <style>
       html,
       body {
@@ -37,6 +39,7 @@
         text-decoration: none;
         color: #000;
         border: 1px solid transparent;
+        cursor: pointer;
       }
       .sidebar .case-link:hover {
         background: #f3f3f3;
@@ -48,28 +51,25 @@
       .case {
         display: none;
       }
-      /* Radio controls – visually hidden */
+      /* Radios (hide) */
       input[name="case"] {
         position: absolute;
         left: -9999px;
       }
-
-      /* Show the right section when a radio is checked */
+      /* Show section for selected case */
       #case-hello:checked ~ .app #view-hello {
         display: block;
       }
       #case-defer:checked ~ .app #view-defer {
         display: block;
       }
-
-      /* Highlight the active case in the sidebar (no JS) */
+      /* Highlight active case in sidebar */
       #case-hello:checked ~ .app .sidebar label[for="case-hello"],
       #case-defer:checked ~ .app .sidebar label[for="case-defer"] {
         background: #e9f3ff;
         border: 1px solid #bcd7ff;
         font-weight: 600;
       }
-
       /* Table */
       table {
         width: 100%;
@@ -105,7 +105,6 @@
       .btn:hover {
         background: #eee;
       }
-
       /* Modal via :target */
       .modal {
         position: fixed;
@@ -156,9 +155,16 @@
         overflow: auto;
       }
     </style>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/atom-one-light.min.css"
+    />
+    <script src="./priv/highlight.min.js"></script>
+    <script src="./priv/highlight-gleam.js"></script>
   </head>
   <body>
-    <!-- Radio controls (no JS) -->
+    <!-- Radios (control which case is visible) -->
     <input type="radio" name="case" id="case-hello" checked />
     <input type="radio" name="case" id="case-defer" />
 
@@ -170,7 +176,7 @@
       </aside>
 
       <main class="main">
-        <!-- Hello World! -->
+        <!-- Case: Hello World! -->
         <section id="view-hello" class="case">
           <h1 style="font-size: 18px; margin: 0 0 12px">Case: Hello World!</h1>
           <table>
@@ -216,7 +222,7 @@
           </table>
         </section>
 
-        <!-- Defer -->
+        <!-- Case: Defer -->
         <section id="view-defer" class="case">
           <h1 style="font-size: 18px; margin: 0 0 12px">Case: Defer</h1>
           <table>
@@ -264,7 +270,8 @@
       </main>
     </div>
 
-    <!-- Modals -->
+    <!-- Modals (language-gleam blocks) -->
+    <!-- Hello World! -->
     <div id="code-hello-gpt4o" class="modal" aria-modal="true" role="dialog">
       <div class="box">
         <header>
@@ -336,7 +343,7 @@ pub fn main() {
           <a class="close" href="#">Close</a>
         </header>
         <div class="body">
-          <pre><code>import gleam/io
+          <pre><code class="language-gleam">import gleam/io
 
 pub fn main() {
   io.println("hello, world!")
@@ -352,7 +359,7 @@ pub fn main() {
           <a class="close" href="#">Close</a>
         </header>
         <div class="body">
-          <pre><code>import gleam/io
+          <pre><code class="language-gleam">import gleam/io
 
 pub fn main() {
   io.println("hello, world!")
@@ -361,6 +368,7 @@ pub fn main() {
       </div>
     </div>
 
+    <!-- Defer -->
     <div id="code-defer-gpt4o" class="modal" aria-modal="true" role="dialog">
       <div class="box">
         <header>
@@ -368,7 +376,7 @@ pub fn main() {
           <a class="close" href="#">Close</a>
         </header>
         <div class="body">
-          <pre><code>import gleam/io
+          <pre><code class="language-gleam">import gleam/io
 
 pub fn defer(callback: fn() -> Nil) -> fn() -> Nil {
   fn() { callback() }
@@ -390,7 +398,7 @@ pub fn main() {
           <a class="close" href="#">Close</a>
         </header>
         <div class="body">
-          <pre><code>pub fn defer(main_fn: fn() -> Nil, cleanup: fn() -> Nil) {
+          <pre><code class="language-gleam">pub fn defer(main_fn: fn() -> Nil, cleanup: fn() -> Nil) {
   main_fn()
   cleanup()
 }
@@ -414,7 +422,7 @@ pub fn main() {
           <a class="close" href="#">Close</a>
         </header>
         <div class="body">
-          <pre><code>import gleam/io
+          <pre><code class="language-gleam">import gleam/io
 
 fn main() {
   use <- defer(fn() { io.println("hello") })
@@ -437,7 +445,7 @@ pub fn defer(deferred: fn() -> a, next: fn() -> b) -> b {
           <a class="close" href="#">Close</a>
         </header>
         <div class="body">
-          <pre><code>import gleam/io
+          <pre><code class="language-gleam">import gleam/io
 
 pub fn defer(cleanup: fn() -> Nil, callback: fn() -> a) -> a {
   let result = callback()
@@ -460,7 +468,7 @@ pub fn main() {
           <a class="close" href="#">Close</a>
         </header>
         <div class="body">
-          <pre><code>import gleam/io
+          <pre><code class="language-gleam">import gleam/io
 
 /// Defers the execution of a given function until the current scope exits.
 pub fn defer(action: fn() -> Nil) -> fn() -> Nil {
@@ -482,7 +490,7 @@ pub fn main() {
           <a class="close" href="#">Close</a>
         </header>
         <div class="body">
-          <pre><code>import gleam/io
+          <pre><code class="language-gleam">import gleam/io
 
 pub fn defer(action: fn() -> a) -> fn(fn() -> b) -> b {
   fn(body: fn() -> b) -> b {
@@ -499,5 +507,22 @@ pub fn main() {
         </div>
       </div>
     </div>
+    <script defer>
+      window.addEventListener("DOMContentLoaded", () => {
+        // If your highlight-gleam.js exposes a global like window.hljsDefineGleam:
+        if (window.hljsDefineGleam) {
+          hljs.registerLanguage("gleam", window.hljsDefineGleam);
+        }
+        // Force any untyped block to be gleam
+        document.querySelectorAll("pre code").forEach((el) => {
+          const hasLang = /\blanguage-/.test(el.className) || /\bhljs-/.test(el.className);
+          if (!hasLang) el.classList.add("language-gleam");
+        });
+        // Optional: restrict autodetect to gleam to avoid JS guessing
+        hljs.configure({ languages: ["gleam"] });
+        // Now highlight
+        hljs.highlightAll();
+      });
+    </script>
   </body>
 </html>
