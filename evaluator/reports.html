@@ -84,31 +84,38 @@ html,body {
 .eval-green {
   color: green;
 }
-</style></head><body><details><summary><span>Case: Hello World!</span></summary><div><details><summary><span>Implementation: gpt-4o-2024-11-20</span></summary><div><pre><code>import gleam/io
+
+.implementation {
+  padding-left: 1rem;
+}
+.implementation-body {
+  padding-left: 1rem;
+}
+</style></head><body><details><summary><span>Case: Hello World!</span></summary><div class="implementation"><details><summary><span>Implementation: gpt-4o-2024-11-20</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 pub fn main() {
   io.println(&quot;hello, world!&quot;)
-}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: o4-mini-2025-04-16</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: o4-mini-2025-04-16</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 pub fn main() {
   io.println(&quot;hello, world!&quot;)
-}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: claude-3-7-sonnet-20250219</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: claude-3-7-sonnet-20250219</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 pub fn main() {
   io.println(&quot;hello, world!&quot;)
-}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: claude-sonnet-4-20250514</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: claude-sonnet-4-20250514</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 pub fn main() {
   io.println(&quot;hello, world!&quot;)
-}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: gemini-2.5-flash-preview-05-20</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: gemini-2.5-flash-preview-05-20</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 pub fn main() {
   io.println(&quot;hello, world!&quot;)
-}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: gemini-2.5-pro-preview-06-05</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: gemini-2.5-pro-preview-06-05</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 pub fn main() {
   io.println(&quot;hello, world!&quot;)
-}</code></pre><p class="eval-green">valid: true</p></div></details></div></details><details><summary><span>Case: Defer</span></summary><div><details><summary><span>Implementation: gpt-4o-2024-11-20</span></summary><div><pre><code>import gleam.io
+}</code></pre><p class="eval-green">valid: true</p></div></details></div></details><details><summary><span>Case: Defer</span></summary><div class="implementation"><details><summary><span>Implementation: gpt-4o-2024-11-20</span></summary><div class="implementation-body"><pre><code>import gleam.io
 
 pub fn defer(callback: fn() -&gt; Nil) -&gt; fn() -&gt; Nil {
   fn() {
@@ -120,7 +127,7 @@ pub fn main() {
   let deferred = defer(fn() { io.println(&quot;hello&quot;) })
   io.println(&quot;1&quot;)
   deferred()
-}</code></pre><p class="eval-red">compile error!</p></div></details><details><summary><span>Implementation: o4-mini-2025-04-16</span></summary><div><pre><code>pub fn defer(main_fn: fn() -&gt; Nil, cleanup: fn() -&gt; Nil) {
+}</code></pre><p class="eval-red">compile error!</p></div></details><details><summary><span>Implementation: o4-mini-2025-04-16</span></summary><div class="implementation-body"><pre><code>pub fn defer(main_fn: fn() -&gt; Nil, cleanup: fn() -&gt; Nil) {
   main_fn()
   cleanup()
 }
@@ -133,7 +140,7 @@ pub fn main() {
     fn() { io.println(&quot;1&quot;) },
     fn() { io.println(&quot;hello&quot;) },
   )
-}</code></pre><p class="eval-red">compile error!</p></div></details><details><summary><span>Implementation: claude-3-7-sonnet-20250219</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-red">compile error!</p></div></details><details><summary><span>Implementation: claude-3-7-sonnet-20250219</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 fn main() {
   use &lt;- defer(fn() { io.println(&quot;hello&quot;) })
@@ -144,7 +151,7 @@ pub fn defer(deferred: fn() -&gt; a, next: fn() -&gt; b) -&gt; b {
   let result = next()
   deferred()
   result
-}</code></pre><p class="eval-red">valid: false</p></div></details><details><summary><span>Implementation: claude-sonnet-4-20250514</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-red">valid: false</p></div></details><details><summary><span>Implementation: claude-sonnet-4-20250514</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 pub fn defer(cleanup: fn() -&gt; Nil, callback: fn() -&gt; a) -&gt; a {
   let result = callback()
@@ -155,7 +162,7 @@ pub fn defer(cleanup: fn() -&gt; Nil, callback: fn() -&gt; a) -&gt; a {
 pub fn main() {
   use &lt;- defer(fn() { io.println(&quot;hello&quot;) })
   io.println(&quot;1&quot;)
-}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: gemini-2.5-flash-preview-05-20</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-green">valid: true</p></div></details><details><summary><span>Implementation: gemini-2.5-flash-preview-05-20</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 /// Defers the execution of a given function until the current scope exits.
 ///
@@ -190,7 +197,7 @@ pub fn main() {
   // Defer printing &quot;hello&quot;. It will be printed when the `main` function&#39;s
   // scope exits, after all other code in `main` has executed.
   use _ = defer(fn() { io.println(&quot;hello&quot;) })
-}</code></pre><p class="eval-red">compile error!</p></div></details><details><summary><span>Implementation: gemini-2.5-pro-preview-06-05</span></summary><div><pre><code>import gleam/io
+}</code></pre><p class="eval-red">compile error!</p></div></details><details><summary><span>Implementation: gemini-2.5-pro-preview-06-05</span></summary><div class="implementation-body"><pre><code>import gleam/io
 
 pub fn defer(action: fn() -&gt; a) -&gt; fn(fn() -&gt; b) -&gt; b {
   fn(body: fn() -&gt; b) -&gt; b {

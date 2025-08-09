@@ -1,3 +1,3 @@
 pub fn main() {
-  todo
+  echo "dev"
 }

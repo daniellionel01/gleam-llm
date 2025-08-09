@@ -1,5 +1,3 @@
-import evaluator/case_
-import evaluator/llm
 import evaluator/project
 import gleam/result
 import gleeunit
