@@ -1,209 +1,484 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Gleam LLM Report — Sidebar View</title>
-<style>
-:root {
-  --bg: #0b0f14;
-  --panel: #0e141b;
-  --panel-2: #0b1219;
-  --text: #e6eef7;
-  --muted: #9db1c7;
-  --accent: #82aaff;
-  --ok: #2ecc71;
-  --bad: #ff6b6b;
-  --border: #18212c;
-  --hover: #0f1721;
-}
-* { box-sizing: border-box; }
-html, body { margin:0; padding:0; background: var(--bg); color: var(--text); font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, Noto Sans; }
-.layout { display:flex; min-height: 100vh; }
-.sidebar { width: 300px; background: var(--panel); border-right: 1px solid var(--border); padding: 16px; position: sticky; top:0; height: 100vh; overflow:auto; }
-.sidebar h1 { font-size: 18px; margin: 0 0 12px; }
-.case-list { display:flex; flex-direction: column; gap: 6px; }
-.case-btn { display:flex; align-items:center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 10px; border:1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; text-align:left; }
-.case-btn:hover { background: var(--hover); border-color: #233444; }
-.case-btn.active { background: #0a1118; border-color: #233444; }
-.case-name { font-weight: 600; font-size: 13px; }
-.case-meta { font-size: 12px; color: var(--muted); }
-.content { flex: 1; padding: 24px; }
-.header { display:flex; align-items:center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
-.search input { background: #0a1118; border:1px solid var(--border); color: var(--text); padding: 10px 12px; border-radius: 10px; min-width: 260px; }
-.card { background: linear-gradient(180deg, var(--panel), var(--panel-2)); border: 1px solid var(--border); border-radius: 14px; padding: 18px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); }
-.table { width: 100%; border-collapse: separate; border-spacing:0; }
-.table th, .table td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-.table thead th { position: sticky; top: 0; background: var(--panel); z-index: 1; }
-.badge { display:inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border:1px solid var(--border); }
-.badge-green { background: rgba(46,204,113,0.1); color: #9af0b7; border-color: rgba(46,204,113,0.3); }
-.badge-red { background: rgba(255,107,107,0.1); color: #ffb3b3; border-color: rgba(255,107,107,0.3); }
-.btn { background: #0a1118; border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; cursor: pointer; }
-.btn:hover { border-color: #213244; }
-.small { color: var(--muted); font-size: 12px; }
-.kbd { background: #0a1118; border:1px solid var(--border); padding: 2px 6px; border-radius: 6px; color: var(--muted); font-size: 12px; }
-.footer { color: var(--muted); font-size: 12px; margin-top: 16px; }
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Implementation Validity by Case</title>
+    <style>
+      html,
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Arial,
+          sans-serif;
+        margin: 0;
+      }
+      .app {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        min-height: 100vh;
+      }
+      /* Sidebar */
+      .sidebar {
+        border-right: 1px solid #ddd;
+        padding: 12px;
+      }
+      .sidebar h2 {
+        font-size: 14px;
+        margin: 0 0 8px;
+      }
+      .sidebar .case-link {
+        display: block;
+        padding: 6px 8px;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #000;
+      }
+      .sidebar .case-link:hover {
+        background: #f3f3f3;
+      }
+      /* Main */
+      .main {
+        padding: 16px;
+      }
+      .case {
+        display: none;
+      }
+      /* Radio controls – visually hidden */
+      input[name="case"] {
+        position: absolute;
+        left: -9999px;
+      }
+      /* Show the right section when a radio is checked.
+     IMPORTANT: target the sibling .app first, then descend. */
+      #case-hello:checked ~ .app #view-hello {
+        display: block;
+      }
+      #case-defer:checked ~ .app #view-defer {
+        display: block;
+      }
 
-/* Modal */
-.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display:none; align-items: center; justify-content: center; z-index: 50; }
-.modal { width: min(900px, 92vw); background: var(--panel); border-radius: 14px; border:1px solid var(--border); box-shadow: 0 18px 40px rgba(0,0,0,0.5); overflow: hidden; }
-.modal header { display:flex; align-items:center; justify-content: space-between; padding: 12px 14px; border-bottom:1px solid var(--border); }
-.modal header h3 { margin:0; font-size: 16px; }
-.modal .content { padding: 14px; }
-.modal .actions { display:flex; justify-content: flex-end; gap: 8px; padding: 14px; border-top:1px solid var(--border); }
-.modal-backdrop.show { display:flex; }
-</style>
-</head>
-<body>
-<div class="layout">
-  <aside class="sidebar">
-    <h1>Cases</h1>
-    <div id="case-list" class="case-list"></div>
-  </aside>
-  <main class="content">
-    <div class="header">
-      <h2>Report</h2>
-      <div class="search">
-        <input id="q" placeholder="Filter by model or status... (Ctrl/Cmd K)" />
+      /* Table */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: #fafafa;
+      }
+      .valid-true {
+        color: #0a6e0a;
+        font-weight: 600;
+      }
+      .valid-false {
+        color: #b00000;
+        font-weight: 600;
+      }
+      .btn {
+        display: inline-block;
+        padding: 4px 8px;
+        border: 1px solid #888;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #000;
+        background: #f7f7f7;
+      }
+      .btn:hover {
+        background: #eee;
+      }
+
+      /* Modal via :target */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+      .modal:target {
+        display: flex;
+      }
+      .modal .box {
+        background: #fff;
+        max-width: 900px;
+        width: 100%;
+        max-height: 85vh;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: auto;
+      }
+      .modal header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 12px;
+        border-bottom: 1px solid #eee;
+      }
+      .modal header h3 {
+        font-size: 15px;
+        margin: 0;
+      }
+      .modal .body {
+        padding: 12px;
+      }
+      .modal .close {
+        text-decoration: none;
+        padding: 4px 8px;
+        border: 1px solid #888;
+        border-radius: 4px;
+        color: #000;
+        background: #f7f7f7;
+      }
+      pre {
+        margin: 0;
+        white-space: pre;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Radio controls (no JS) -->
+    <input type="radio" name="case" id="case-hello" checked />
+    <input type="radio" name="case" id="case-defer" />
+
+    <div class="app">
+      <aside class="sidebar">
+        <h2>Cases</h2>
+        <label class="case-link" for="case-hello">Hello World!</label>
+        <label class="case-link" for="case-defer">Defer</label>
+      </aside>
+
+      <main class="main">
+        <!-- Hello World! -->
+        <section id="view-hello" class="case">
+          <h1 style="font-size: 18px; margin: 0 0 12px">Case: Hello World!</h1>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 40%">model</th>
+                <th style="width: 10%">valid</th>
+                <th>code</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>gpt-4o-2024-11-20</td>
+                <td class="valid-true">true</td>
+                <td><a class="btn" href="#code-hello-gpt4o">View code</a></td>
+              </tr>
+              <tr>
+                <td>o4-mini-2025-04-16</td>
+                <td class="valid-true">true</td>
+                <td><a class="btn" href="#code-hello-o4mini">View code</a></td>
+              </tr>
+              <tr>
+                <td>claude-3-7-sonnet-20250219</td>
+                <td class="valid-true">true</td>
+                <td><a class="btn" href="#code-hello-claude37">View code</a></td>
+              </tr>
+              <tr>
+                <td>claude-sonnet-4-20250514</td>
+                <td class="valid-true">true</td>
+                <td><a class="btn" href="#code-hello-claude4">View code</a></td>
+              </tr>
+              <tr>
+                <td>gemini-2.5-flash-preview-05-20</td>
+                <td class="valid-true">true</td>
+                <td><a class="btn" href="#code-hello-gemflash">View code</a></td>
+              </tr>
+              <tr>
+                <td>gemini-2.5-pro-preview-06-05</td>
+                <td class="valid-true">true</td>
+                <td><a class="btn" href="#code-hello-gempro">View code</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Defer -->
+        <section id="view-defer" class="case">
+          <h1 style="font-size: 18px; margin: 0 0 12px">Case: Defer</h1>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 40%">model</th>
+                <th style="width: 10%">valid</th>
+                <th>code</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>gpt-4o-2024-11-20</td>
+                <td class="valid-false">false</td>
+                <td><a class="btn" href="#code-defer-gpt4o">View code</a></td>
+              </tr>
+              <tr>
+                <td>o4-mini-2025-04-16</td>
+                <td class="valid-false">false</td>
+                <td><a class="btn" href="#code-defer-o4mini">View code</a></td>
+              </tr>
+              <tr>
+                <td>claude-3-7-sonnet-20250219</td>
+                <td class="valid-false">false</td>
+                <td><a class="btn" href="#code-defer-claude37">View code</a></td>
+              </tr>
+              <tr>
+                <td>claude-sonnet-4-20250514</td>
+                <td class="valid-true">true</td>
+                <td><a class="btn" href="#code-defer-claude4">View code</a></td>
+              </tr>
+              <tr>
+                <td>gemini-2.5-flash-preview-05-20</td>
+                <td class="valid-false">false</td>
+                <td><a class="btn" href="#code-defer-gemflash">View code</a></td>
+              </tr>
+              <tr>
+                <td>gemini-2.5-pro-preview-06-05</td>
+                <td class="valid-false">false</td>
+                <td><a class="btn" href="#code-defer-gempro">View code</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modals (pure CSS via :target). Each has its own anchor id -->
+    <!-- Hello World! code -->
+    <div id="code-hello-gpt4o" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Hello World! — gpt-4o-2024-11-20</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
+
+pub fn main() {
+  io.println("hello, world!")
+}</code></pre>
+        </div>
       </div>
     </div>
-    <div class="card">
-<section class="case" data-case="case-1">
-<h2>Case: Hello World!</h2>
-<table class="table">
-<thead><tr><th>Model</th><th>Status</th><th>Action</th></tr></thead>
-<tbody>
-<tr data-model="gpt-4o-2024-11-20" data-status="valid: true" data-valid="true"><td><code>gpt-4o-2024-11-20</code></td><td><span class="badge badge-green">Valid</span> <span class="small">• valid: true</span></td><td><button class="btn view-btn" data-title="gpt-4o-2024-11-20 — Hello World!" data-code="import gleam/io
+
+    <div id="code-hello-o4mini" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Hello World! — o4-mini-2025-04-16</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
 
 pub fn main() {
-  io.println(&quot;hello, world!&quot;)
-}">View code</button></td></tr>
-<tr data-model="o4-mini-2025-04-16" data-status="valid: true" data-valid="true"><td><code>o4-mini-2025-04-16</code></td><td><span class="badge badge-green">Valid</span> <span class="small">• valid: true</span></td><td><button class="btn view-btn" data-title="o4-mini-2025-04-16 — Hello World!" data-code="import gleam/io
+  io.println("hello, world!")
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="code-hello-claude37" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Hello World! — claude-3-7-sonnet-20250219</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
 
 pub fn main() {
-  io.println(&quot;hello, world!&quot;)
-}">View code</button></td></tr>
-<tr data-model="claude-3-7-sonnet-20250219" data-status="valid: true" data-valid="true"><td><code>claude-3-7-sonnet-20250219</code></td><td><span class="badge badge-green">Valid</span> <span class="small">• valid: true</span></td><td><button class="btn view-btn" data-title="claude-3-7-sonnet-20250219 — Hello World!" data-code="import gleam/io
+  io.println("hello, world!")
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="code-hello-claude4" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Hello World! — claude-sonnet-4-20250514</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
 
 pub fn main() {
-  io.println(&quot;hello, world!&quot;)
-}">View code</button></td></tr>
-<tr data-model="claude-sonnet-4-20250514" data-status="valid: true" data-valid="true"><td><code>claude-sonnet-4-20250514</code></td><td><span class="badge badge-green">Valid</span> <span class="small">• valid: true</span></td><td><button class="btn view-btn" data-title="claude-sonnet-4-20250514 — Hello World!" data-code="import gleam/io
+  io.println("hello, world!")
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="code-hello-gemflash" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Hello World! — gemini-2.5-flash-preview-05-20</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
 
 pub fn main() {
-  io.println(&quot;hello, world!&quot;)
-}">View code</button></td></tr>
-<tr data-model="gemini-2.5-flash-preview-05-20" data-status="valid: true" data-valid="true"><td><code>gemini-2.5-flash-preview-05-20</code></td><td><span class="badge badge-green">Valid</span> <span class="small">• valid: true</span></td><td><button class="btn view-btn" data-title="gemini-2.5-flash-preview-05-20 — Hello World!" data-code="import gleam/io
+  io.println("hello, world!")
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="code-hello-gempro" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Hello World! — gemini-2.5-pro-preview-06-05</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
 
 pub fn main() {
-  io.println(&quot;hello, world!&quot;)
-}">View code</button></td></tr>
-<tr data-model="gemini-2.5-pro-preview-06-05" data-status="valid: true" data-valid="true"><td><code>gemini-2.5-pro-preview-06-05</code></td><td><span class="badge badge-green">Valid</span> <span class="small">• valid: true</span></td><td><button class="btn view-btn" data-title="gemini-2.5-pro-preview-06-05 — Hello World!" data-code="import gleam/io
+  io.println("hello, world!")
+}</code></pre>
+        </div>
+      </div>
+    </div>
 
-pub fn main() {
-  io.println(&quot;hello, world!&quot;)
-}">View code</button></td></tr>
-</tbody>
-</table>
-<div class="small empty-hint" style="display:none; margin-top:8px;">No rows match your filter.</div>
-</section>
-<hr class="sep" />
-<section class="case" data-case="case-2">
-<h2>Case: Defer</h2>
-<table class="table">
-<thead><tr><th>Model</th><th>Status</th><th>Action</th></tr></thead>
-<tbody>
-<tr data-model="gpt-4o-2024-11-20" data-status="compile error!" data-valid="false"><td><code>gpt-4o-2024-11-20</code></td><td><span class="badge badge-red">Invalid (compile error)</span> <span class="small">• compile error!</span></td><td><button class="btn view-btn" data-title="gpt-4o-2024-11-20 — Defer" data-code="import gleam.io
+    <!-- Defer code -->
+    <div id="code-defer-gpt4o" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Defer — gpt-4o-2024-11-20</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
 
-pub fn defer(callback: fn() -&gt; Nil) -&gt; fn() -&gt; Nil {
-  fn() {
-    callback()
-  }
+pub fn defer(callback: fn() -> Nil) -> fn() -> Nil {
+  fn() { callback() }
 }
 
 pub fn main() {
-  let deferred = defer(fn() { io.println(&quot;hello&quot;) })
-  io.println(&quot;1&quot;)
+  let deferred = defer(fn() { io.println("hello") })
+  io.println("1")
   deferred()
-}">View code</button></td></tr>
-<tr data-model="o4-mini-2025-04-16" data-status="compile error!" data-valid="false"><td><code>o4-mini-2025-04-16</code></td><td><span class="badge badge-red">Invalid (compile error)</span> <span class="small">• compile error!</span></td><td><button class="btn view-btn" data-title="o4-mini-2025-04-16 — Defer" data-code="pub fn defer(main_fn: fn() -&gt; Nil, cleanup: fn() -&gt; Nil) {
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="code-defer-o4mini" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Defer — o4-mini-2025-04-16</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>pub fn defer(main_fn: fn() -> Nil, cleanup: fn() -> Nil) {
   main_fn()
   cleanup()
 }
 
-use main.{defer}
-import io
+import gleam/io
 
 pub fn main() {
   defer(
-    fn() { io.println(&quot;1&quot;) },
-    fn() { io.println(&quot;hello&quot;) },
+    fn() { io.println("1") },
+    fn() { io.println("hello") },
   )
-}">View code</button></td></tr>
-<tr data-model="claude-3-7-sonnet-20250219" data-status="valid: false" data-valid="false"><td><code>claude-3-7-sonnet-20250219</code></td><td><span class="badge badge-red">Invalid</span> <span class="small">• valid: false</span></td><td><button class="btn view-btn" data-title="claude-3-7-sonnet-20250219 — Defer" data-code="import gleam/io
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="code-defer-claude37" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Defer — claude-3-7-sonnet-20250219</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
 
 fn main() {
-  use &lt;- defer(fn() { io.println(&quot;hello&quot;) })
-  io.println(&quot;1&quot;)
+  use <- defer(fn() { io.println("hello") })
+  io.println("1")
 }
 
-pub fn defer(deferred: fn() -&gt; a, next: fn() -&gt; b) -&gt; b {
+pub fn defer(deferred: fn() -> a, next: fn() -> b) -> b {
   let result = next()
   deferred()
   result
-}">View code</button></td></tr>
-<tr data-model="claude-sonnet-4-20250514" data-status="valid: true" data-valid="true"><td><code>claude-sonnet-4-20250514</code></td><td><span class="badge badge-green">Valid</span> <span class="small">• valid: true</span></td><td><button class="btn view-btn" data-title="claude-sonnet-4-20250514 — Defer" data-code="import gleam/io
+}</code></pre>
+        </div>
+      </div>
+    </div>
 
-pub fn defer(cleanup: fn() -&gt; Nil, callback: fn() -&gt; a) -&gt; a {
+    <div id="code-defer-claude4" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Defer — claude-sonnet-4-20250514</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
+
+pub fn defer(cleanup: fn() -> Nil, callback: fn() -> a) -> a {
   let result = callback()
   cleanup()
   result
 }
 
 pub fn main() {
-  use &lt;- defer(fn() { io.println(&quot;hello&quot;) })
-  io.println(&quot;1&quot;)
-}">View code</button></td></tr>
-<tr data-model="gemini-2.5-flash-preview-05-20" data-status="compile error!" data-valid="false"><td><code>gemini-2.5-flash-preview-05-20</code></td><td><span class="badge badge-red">Invalid (compile error)</span> <span class="small">• compile error!</span></td><td><button class="btn view-btn" data-title="gemini-2.5-flash-preview-05-20 — Defer" data-code="import gleam/io
+  use <- defer(fn() { io.println("hello") })
+  io.println("1")
+}</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div id="code-defer-gemflash" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Defer — gemini-2.5-flash-preview-05-20</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
 
 /// Defers the execution of a given function until the current scope exits.
-///
-/// This function is intended to be used with Gleam&#x27;s `use` keyword,
-/// which automatically calls the returned cleanup function when the
-/// block it&#x27;s defined in finishes execution.
-///
-/// ## Example
-/// 
-/// import gleam/io
-/// import my_module/defer
-///
-/// pub fn main() {
-///   io.println(&quot;This prints first.&quot;)
-///   use _ = defer.defer(fn() { io.println(&quot;This prints last.&quot;) })
-///   io.println(&quot;This prints second.&quot;)
-///   // &quot;This prints last.&quot; will be printed after &quot;This prints second.&quot;
-///   // and before the `main` function exits.
-/// }
-/// 
-pub fn defer(action: fn() -&gt; Nil) -&gt; fn() -&gt; Nil {
-  // We return a new function that simply calls the `action` provided.
-  // Gleam&#x27;s `use` keyword will automatically call this returned function
-  // when the scope where `use _ = defer(...)` is declared exits.
-  fn() {
-    action()
-  }
+pub fn defer(action: fn() -> Nil) -> fn() -> Nil {
+  fn() { action() }
 }
 
 pub fn main() {
-  io.println(&quot;1&quot;)
-  // Defer printing &quot;hello&quot;. It will be printed when the `main` function&#x27;s
-  // scope exits, after all other code in `main` has executed.
-  use _ = defer(fn() { io.println(&quot;hello&quot;) })
-}">View code</button></td></tr>
-<tr data-model="gemini-2.5-pro-preview-06-05" data-status="compile error!" data-valid="false"><td><code>gemini-2.5-pro-preview-06-05</code></td><td><span class="badge badge-red">Invalid (compile error)</span> <span class="small">• compile error!</span></td><td><button class="btn view-btn" data-title="gemini-2.5-pro-preview-06-05 — Defer" data-code="import gleam/io
+  io.println("1")
+  use _ = defer(fn() { io.println("hello") })
+}</code></pre>
+        </div>
+      </div>
+    </div>
 
-pub fn defer(action: fn() -&gt; a) -&gt; fn(fn() -&gt; b) -&gt; b {
-  fn(body: fn() -&gt; b) -&gt; b {
+    <div id="code-defer-gempro" class="modal" aria-modal="true" role="dialog">
+      <div class="box">
+        <header>
+          <h3>Defer — gemini-2.5-pro-preview-06-05</h3>
+          <a class="close" href="#">Close</a>
+        </header>
+        <div class="body">
+          <pre><code>import gleam/io
+
+pub fn defer(action: fn() -> a) -> fn(fn() -> b) -> b {
+  fn(body: fn() -> b) -> b {
     let result = body()
     let _ = action()
     result
@@ -211,118 +486,11 @@ pub fn defer(action: fn() -&gt; a) -&gt; fn(fn() -&gt; b) -&gt; b {
 }
 
 pub fn main() {
-  use &lt;- defer(fn() { io.println(&quot;hello&quot;) })
-  io.println(&quot;1&quot;)
-}">View code</button></td></tr>
-</tbody>
-</table>
-<div class="small empty-hint" style="display:none; margin-top:8px;">No rows match your filter.</div>
-</section>
-<hr class="sep" />
-
-    </div>
-    <div class="footer">Use the left sidebar to switch cases. Source: <code>reports.html</code>.</div>
-  </main>
-</div>
-
-<div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <header>
-      <h3 id="modal-title">Source code</h3>
-      <div>
-        <button class="btn" id="copy-btn" title="Copy to clipboard">Copy</button>
-        <button class="btn" id="close-btn" title="Close">Close</button>
+  use <- defer(fn() { io.println("hello") })
+  io.println("1")
+}</code></pre>
+        </div>
       </div>
-    </header>
-    <div class="content">
-      <pre class="code"><code id="modal-code"></code></pre>
     </div>
-    <div class="actions">
-      <span class="small">Press Esc to close</span>
-    </div>
-  </div>
-</div>
-
-<script>
-
-(function(){
-  const state = { current: null };
-  const q = document.getElementById('q');
-  const sidebar = document.getElementById('case-list');
-  const sections = document.querySelectorAll('section.case');
-
-  function normalize(s){ return (s||'').toLowerCase(); }
-
-  function filterRows(section){
-    const term = normalize(q.value);
-    const rows = section.querySelectorAll('tbody tr');
-    let visibleRows = 0;
-    rows.forEach(tr => {
-      const text = normalize(tr.getAttribute('data-model') + ' ' + tr.getAttribute('data-status'));
-      const show = !term || text.includes(term);
-      tr.style.display = show ? '' : 'none';
-      if (show) visibleRows += 1;
-    });
-    section.querySelector('.empty-hint').style.display = visibleRows ? 'none' : '';
-  }
-
-  function activateCase(id){
-    sections.forEach(sec => {
-      const active = sec.getAttribute('data-case') === id;
-      sec.style.display = active ? '' : 'none';
-      if (active){ state.current = sec; filterRows(sec); }
-    });
-    document.querySelectorAll('.case-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-case-id') === id);
-    });
-  }
-
-  // Build sidebar
-  sections.forEach((sec, idx) => {
-    const id = sec.getAttribute('data-case');
-    const name = sec.querySelector('h2').textContent.replace(/^Case:\s*/, '');
-    const total = sec.querySelectorAll('tbody tr').length;
-    const valid = sec.querySelectorAll('tbody tr[data-valid="true"]').length;
-    const btn = document.createElement('button');
-    btn.className = 'case-btn';
-    btn.setAttribute('data-case-id', id);
-    btn.innerHTML = `<span class="case-name">${name}</span><span class="case-meta">${valid}/${total} valid</span>`;
-    btn.addEventListener('click', ()=>activateCase(id));
-    sidebar.appendChild(btn);
-    if (idx === 0) activateCase(id);
-  });
-
-  if (q) q.addEventListener('input', ()=>{ if (state.current) filterRows(state.current); });
-
-  // Modal
-  const backdrop = document.getElementById('modal-backdrop');
-  const modalTitle = document.getElementById('modal-title');
-  const codeBlock = document.getElementById('modal-code');
-  const copyBtn = document.getElementById('copy-btn');
-  function openModal(title, code){ modalTitle.textContent = title; codeBlock.textContent = code; backdrop.classList.add('show'); }
-  function closeModal(){ backdrop.classList.remove('show'); }
-  document.querySelectorAll('.view-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
-      openModal(btn.getAttribute('data-title'), btn.getAttribute('data-code'));
-    });
-  });
-  document.getElementById('close-btn').addEventListener('click', closeModal);
-  backdrop.addEventListener('click', (e)=>{ if (e.target === backdrop) closeModal(); });
-  document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') closeModal(); });
-
-  copyBtn.addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(codeBlock.textContent);
-      const v = copyBtn.textContent; copyBtn.textContent = 'Copied'; setTimeout(()=>copyBtn.textContent=v, 1200);
-    } catch(e) {}
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault(); q.focus(); q.select();
-    }
-  });
-})();
-
-</script>
-</body>
+  </body>
 </html>
