@@ -161,6 +161,10 @@ pub fn main() {
           attribute.content("width=device-width, initial-scale=1"),
         ]),
         html.title([], "Gleam LLM Report"),
+        html.link([
+          attribute.href("https://fav.farm/%F0%9F%A4%96"),
+          attribute.rel("icon"),
+        ]),
         html.style([], constants.css_reset),
         html.style([], style),
 
