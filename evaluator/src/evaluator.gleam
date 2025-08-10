@@ -228,11 +228,11 @@ pub fn main() {
                   html.h1(
                     [
                       attribute.style("font-size", "18px"),
-                      attribute.style("margin", "0 0 12px"),
+                      attribute.style("margin", "0 0 15px"),
                     ],
                     [html.text("Case: " <> case_.title)],
                   ),
-                  html.p([attribute.style("margin", "0 0 12px")], [
+                  html.p([attribute.style("margin", "0 0 15px")], [
                     html.text(case_.contents),
                   ]),
                   html.table([], [
