@@ -218,6 +218,12 @@ pre {
           #case-select:has(#case-defer:checked) .sidebar label[for="case-defer"] {
             background:#e9f3ff; border:1px solid #bcd7ff; font-weight:600;
           }
+        
+
+          #case-select:has(#case-matrix:checked) #view-matrix { display:block; }
+          #case-select:has(#case-matrix:checked) .sidebar label[for="case-matrix"] {
+            background:#e9f3ff; border:1px solid #bcd7ff; font-weight:600;
+          }
         </style><link href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/atom-one-light.min.css" rel="stylesheet"><script src="./js/highlight.min.js"></script><script src="./js/highlight-gleam.js"></script><script>
           window.addEventListener("DOMContentLoaded", () => {
             if (window.hljsDefineGleam) {
@@ -229,10 +235,14 @@ pre {
             hljs.configure({ languages: ["gleam"] });
             hljs.highlightAll();
           });
-</script></head><body><div id="case-select"><div class="app"><aside class="sidebar"><h2>Cases</h2><label class="case-link" for="case-hello">Hello World!</label><label class="case-link" for="case-defer">Defer</label></aside><main class="main"><section class="case" id="view-hello"><h1 style="font-size:18px;;margin:0 0 15px;">Case: Hello World!</h1><p style="margin:0 0 15px;">A program that outputs &#39;hello, world!&#39;</p><table><thead><tr><th style="width:40%;">model</th><th style="width:10%;">valid</th><th>code</th></tr></thead><tbody><tr><td>gpt-4o-2024-11-20</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gpt-4o-2024-11-20">View code</a></td></tr><tr><td>o4-mini-2025-04-16</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-o4-mini-2025-04-16">View code</a></td></tr><tr><td>claude-3-7-sonnet-20250219</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-claude-3-7-sonnet-20250219">View code</a></td></tr><tr><td>claude-sonnet-4-20250514</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-claude-sonnet-4-20250514">View code</a></td></tr><tr><td>gemini-2.5-flash-preview-05-20</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gemini-2.5-flash-preview-05-20">View code</a></td></tr><tr><td>gemini-2.5-pro-preview-06-05</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gemini-2.5-pro-preview-06-05">View code</a></td></tr></tbody></table></section><section class="case" id="view-defer"><h1 style="font-size:18px;;margin:0 0 15px;">Case: Defer</h1><p style="margin:0 0 15px;">
+</script></head><body><div id="case-select"><div class="app"><aside class="sidebar"><h2>Cases</h2><label class="case-link" for="case-hello">Hello World!</label><label class="case-link" for="case-defer">Defer</label><label class="case-link" for="case-matrix">Matrix</label></aside><main class="main"><section class="case" id="view-hello"><h1 style="font-size:18px;;margin:0 0 15px;">Case: Hello World!</h1><p style="margin:0 0 15px;">A program that outputs &#39;hello, world!&#39;</p><table><thead><tr><th style="width:40%;">model</th><th style="width:10%;">valid</th><th>code</th></tr></thead><tbody><tr><td>gpt-4o-2024-11-20</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gpt-4o-2024-11-20">View code</a></td></tr><tr><td>o4-mini-2025-04-16</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-o4-mini-2025-04-16">View code</a></td></tr><tr><td>claude-3-7-sonnet-20250219</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-claude-3-7-sonnet-20250219">View code</a></td></tr><tr><td>claude-sonnet-4-20250514</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-claude-sonnet-4-20250514">View code</a></td></tr><tr><td>gemini-2.5-flash-preview-05-20</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gemini-2.5-flash-preview-05-20">View code</a></td></tr><tr><td>gemini-2.5-pro-preview-06-05</td><td class="valid-true">true</td><td><a class="btn" href="#code-hello-gemini-2.5-pro-preview-06-05">View code</a></td></tr></tbody></table></section><section class="case" id="view-defer"><h1 style="font-size:18px;;margin:0 0 15px;">Case: Defer</h1><p style="margin:0 0 15px;">
 A program that demonstrates a &#39;defer&#39; utility function. Write the function called &#39;defer&#39; that can be used via the gleam `use` syntax.
 Demonstrate it by deferring a print of &#39;hello&#39; and printing &#39;1&#39; before.
-</p><table><thead><tr><th style="width:40%;">model</th><th style="width:10%;">valid</th><th>code</th></tr></thead><tbody><tr><td>gpt-4o-2024-11-20</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-gpt-4o-2024-11-20">View code</a></td></tr><tr><td>o4-mini-2025-04-16</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-o4-mini-2025-04-16">View code</a></td></tr><tr><td>claude-3-7-sonnet-20250219</td><td class="valid-true">true</td><td><a class="btn" href="#code-defer-claude-3-7-sonnet-20250219">View code</a></td></tr><tr><td>claude-sonnet-4-20250514</td><td class="valid-true">true</td><td><a class="btn" href="#code-defer-claude-sonnet-4-20250514">View code</a></td></tr><tr><td>gemini-2.5-flash-preview-05-20</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-gemini-2.5-flash-preview-05-20">View code</a></td></tr><tr><td>gemini-2.5-pro-preview-06-05</td><td class="valid-true">true</td><td><a class="btn" href="#code-defer-gemini-2.5-pro-preview-06-05">View code</a></td></tr></tbody></table></section></main><div><div aria-modal="true" class="modal" id="code-hello-gpt-4o-2024-11-20" role="dialog"><div class="box"><header><h3>Hello World! — gpt-4o-2024-11-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
+</p><table><thead><tr><th style="width:40%;">model</th><th style="width:10%;">valid</th><th>code</th></tr></thead><tbody><tr><td>gpt-4o-2024-11-20</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-gpt-4o-2024-11-20">View code</a></td></tr><tr><td>o4-mini-2025-04-16</td><td class="valid-true">true</td><td><a class="btn" href="#code-defer-o4-mini-2025-04-16">View code</a></td></tr><tr><td>claude-3-7-sonnet-20250219</td><td class="valid-true">true</td><td><a class="btn" href="#code-defer-claude-3-7-sonnet-20250219">View code</a></td></tr><tr><td>claude-sonnet-4-20250514</td><td class="valid-true">true</td><td><a class="btn" href="#code-defer-claude-sonnet-4-20250514">View code</a></td></tr><tr><td>gemini-2.5-flash-preview-05-20</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-gemini-2.5-flash-preview-05-20">View code</a></td></tr><tr><td>gemini-2.5-pro-preview-06-05</td><td class="valid-false">false</td><td><a class="btn" href="#code-defer-gemini-2.5-pro-preview-06-05">View code</a></td></tr></tbody></table></section><section class="case" id="view-matrix"><h1 style="font-size:18px;;margin:0 0 15px;">Case: Matrix</h1><p style="margin:0 0 15px;">
+Write a Gleam program that defines a function transpose(matrix: List(List(Int))) -&gt; List(List(Int)) which takes a matrix of integers and returns its transpose.
+The transpose flips rows into columns, so the element at position (i, j) becomes (j, i).
+Include a main function that exclusively prints the transpose of [[1, 2, 3], [4, 5, 6]], nothing else.
+</p><table><thead><tr><th style="width:40%;">model</th><th style="width:10%;">valid</th><th>code</th></tr></thead><tbody><tr><td>gpt-4o-2024-11-20</td><td class="valid-false">false</td><td><a class="btn" href="#code-matrix-gpt-4o-2024-11-20">View code</a></td></tr><tr><td>o4-mini-2025-04-16</td><td class="valid-false">false</td><td><a class="btn" href="#code-matrix-o4-mini-2025-04-16">View code</a></td></tr><tr><td>claude-3-7-sonnet-20250219</td><td class="valid-false">false</td><td><a class="btn" href="#code-matrix-claude-3-7-sonnet-20250219">View code</a></td></tr><tr><td>claude-sonnet-4-20250514</td><td class="valid-false">false</td><td><a class="btn" href="#code-matrix-claude-sonnet-4-20250514">View code</a></td></tr><tr><td>gemini-2.5-flash-preview-05-20</td><td class="valid-false">false</td><td><a class="btn" href="#code-matrix-gemini-2.5-flash-preview-05-20">View code</a></td></tr><tr><td>gemini-2.5-pro-preview-06-05</td><td class="valid-false">false</td><td><a class="btn" href="#code-matrix-gemini-2.5-pro-preview-06-05">View code</a></td></tr></tbody></table></section></main><div><div aria-modal="true" class="modal" id="code-hello-gpt-4o-2024-11-20" role="dialog"><div class="box"><header><h3>Hello World! — gpt-4o-2024-11-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
 pub fn main() {
   io.println(&quot;hello, world!&quot;)
@@ -259,26 +269,25 @@ pub fn main() {
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gpt-4o-2024-11-20" role="dialog"><div class="box"><header><h3>Defer — gpt-4o-2024-11-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
 pub fn main() {
-  use _ &lt;- defer(fn() { io.println(&quot;hello&quot;) })
+  defer(do_hello())
   io.println(&quot;1&quot;)
 }
 
-pub fn defer(action: fn() -&gt; Nil) -&gt; Result(Nil, Nil) {
-  Result(fn() {
-    action()
-    Nil
-  })
-}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-o4-mini-2025-04-16" role="dialog"><div class="box"><header><h3>Defer — o4-mini-2025-04-16</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
-
-pub fn defer(deferred: fn() -&gt; Nil) -&gt; fn(fn(Nil) -&gt; a) -&gt; a {
-  fn(callback) {
-    let result = callback(Nil)
-    deferred()
-    result
-  }
+pub fn defer(action: fn() -&gt; ()) -&gt; Nil {
+  use _ &lt;- action()
+  Nil
 }
 
-pub fn main() {
+fn do_hello() -&gt; () {
+  io.println(&quot;hello&quot;)
+}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-o4-mini-2025-04-16" role="dialog"><div class="box"><header><h3>Defer — o4-mini-2025-04-16</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
+
+pub fn defer(thunk: fn() -&gt; Nil, f: fn(Nil) -&gt; Nil) -&gt; Nil {
+  f(Nil)
+  thunk()
+}
+
+pub fn main() -&gt; Nil {
   use _ &lt;- defer(fn() { io.println(&quot;hello&quot;) })
   io.println(&quot;1&quot;)
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-claude-3-7-sonnet-20250219" role="dialog"><div class="box"><header><h3>Defer — claude-3-7-sonnet-20250219</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
@@ -288,15 +297,15 @@ pub fn main() {
   io.println(&quot;1&quot;)
 }
 
-pub fn defer(callback: fn() -&gt; a, continuation: fn() -&gt; b) -&gt; b {
-  let result = continuation()
-  callback()
+pub fn defer(f: fn() -&gt; a, callback: fn() -&gt; b) -&gt; b {
+  let result = callback()
+  f()
   result
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-claude-sonnet-4-20250514" role="dialog"><div class="box"><header><h3>Defer — claude-sonnet-4-20250514</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
-pub fn defer(cleanup: fn() -&gt; Nil, callback: fn() -&gt; a) -&gt; a {
-  let result = callback()
-  cleanup()
+pub fn defer(callback: fn() -&gt; Nil, continuation: fn() -&gt; a) -&gt; a {
+  let result = continuation()
+  callback()
   result
 }
 
@@ -305,24 +314,211 @@ pub fn main() {
   io.println(&quot;1&quot;)
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gemini-2.5-flash-preview-05-20" role="dialog"><div class="box"><header><h3>Defer — gemini-2.5-flash-preview-05-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
-pub fn main() {
-  io.println(&quot;1&quot;)
-  use _ &lt;- defer(fn() { io.println(&quot;hello&quot;) })
+pub fn defer(cleanup_fn: fn() -&gt; Nil) -&gt; fn(fn() -&gt; a) -&gt; a {
+  fn(main_body: fn() -&gt; a) -&gt; a {
+    let result = main_body()
+    cleanup_fn()
+    result
+  }
 }
 
-pub fn defer(clean_up_action: fn() -&gt; Nil, main_block: fn(Nil) -&gt; a) -&gt; a {
-  let result = main_block(Nil)
-  clean_up_action()
-  result
+pub fn main() {
+  io.println(&quot;Program start&quot;)
+
+  use _ &lt;- defer(fn() {
+    io.println(&quot;hello&quot;)
+  }) {
+    io.println(&quot;1&quot;)
+    Nil
+  }
+
+  io.println(&quot;Program end&quot;)
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gemini-2.5-pro-preview-06-05" role="dialog"><div class="box"><header><h3>Defer — gemini-2.5-pro-preview-06-05</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
-fn defer(deferred_action: fn() -&gt; a, main_action: fn() -&gt; b) -&gt; b {
-  let result = main_action()
-  deferred_action()
-  result
+fn defer(action: fn() -&gt; a) -&gt; fn(fn() -&gt; b) -&gt; b {
+  fn(callback: fn() -&gt; b) -&gt; b {
+    let result = callback()
+    let _ = action()
+    result
+  }
 }
 
 pub fn main() {
   use &lt;- defer(fn() { io.println(&quot;hello&quot;) })
   io.println(&quot;1&quot;)
-}</code></pre></div></div></div></div></div><input checked id="case-hello" name="case" type="radio"><input checked id="case-defer" name="case" type="radio"></div></body></html>
+}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-matrix-gpt-4o-2024-11-20" role="dialog"><div class="box"><header><h3>Matrix — gpt-4o-2024-11-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
+import gleam/list
+
+pub fn transpose(matrix: List(List(Int))) -&gt; List(List(Int)) {
+  case matrix {
+    [] -&gt; []
+    [row, ..rest] -&gt;
+      row
+      |&gt; list.map(fn(_, idx) {
+        row |&gt; list.concat(list.map(rest, fn(r) { [r[idx]] }))
+      })
+  }
+}
+
+pub fn main() {
+  io.println(transpose([[1, 2, 3], [4, 5, 6]]))
+}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-matrix-o4-mini-2025-04-16" role="dialog"><div class="box"><header><h3>Matrix — o4-mini-2025-04-16</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
+import gleam/list
+
+pub fn transpose(matrix: List(List(Int))) -&gt; List(List(Int)) {
+  case matrix {
+    [] -&gt; []
+    [first, ..] -&gt;
+      case first {
+        [] -&gt; []
+        _ -&gt;
+          let heads = list.map(matrix, fn(row) {
+            case row {
+              [h, ..] -&gt; h
+              [] -&gt; 0
+            }
+          })
+          let tails = list.map(matrix, fn(row) {
+            case row {
+              [_, ..r] -&gt; r
+              [] -&gt; []
+            }
+          })
+          [heads, ..transpose(tails)]
+      }
+  }
+}
+
+pub fn main() {
+  echo transpose([[1, 2, 3], [4, 5, 6]])
+}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-matrix-claude-3-7-sonnet-20250219" role="dialog"><div class="box"><header><h3>Matrix — claude-3-7-sonnet-20250219</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
+import gleam/list
+import gleam/string
+
+pub fn main() {
+  let matrix = [[1, 2, 3], [4, 5, 6]]
+  let transposed = transpose(matrix)
+  
+  transposed
+  |&gt; list.map(fn(row) {
+    row
+    |&gt; list.map(string.inspect)
+    |&gt; string.join(&quot;, &quot;)
+  })
+  |&gt; string.join(&quot;\n&quot;)
+  |&gt; io.println
+}
+
+pub fn transpose(matrix: List(List(Int))) -&gt; List(List(Int)) {
+  case matrix {
+    [] -&gt; []
+    [[], ..] -&gt; []
+    _ -&gt; {
+      let first_row = list.first(matrix)
+        |&gt; list.unwrap([])
+        
+      let column_count = list.length(first_row)
+      
+      list.range(0, column_count - 1)
+      |&gt; list.map(fn(col_index) {
+        matrix
+        |&gt; list.map(fn(row) {
+          list.at(row, col_index)
+          |&gt; list.unwrap(0)
+        })
+      })
+    }
+  }
+}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-matrix-claude-sonnet-4-20250514" role="dialog"><div class="box"><header><h3>Matrix — claude-sonnet-4-20250514</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
+import gleam/list
+import gleam/int
+
+pub fn transpose(matrix: List(List(Int))) -&gt; List(List(Int)) {
+  case matrix {
+    [] -&gt; []
+    [[] | _] -&gt; []
+    _ -&gt; {
+      let heads = list.map(matrix, fn(row) {
+        case row {
+          [head | _] -&gt; head
+          [] -&gt; 0
+        }
+      })
+      let tails = list.map(matrix, fn(row) {
+        case row {
+          [_ | tail] -&gt; tail
+          [] -&gt; []
+        }
+      })
+      [heads | transpose(tails)]
+    }
+  }
+}
+
+pub fn main() {
+  let matrix = [[1, 2, 3], [4, 5, 6]]
+  let transposed = transpose(matrix)
+  io.debug(transposed)
+}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-matrix-gemini-2.5-flash-preview-05-20" role="dialog"><div class="box"><header><h3>Matrix — gemini-2.5-flash-preview-05-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
+import gleam/list
+
+fn get_current_column(matrix: List(List(Int))) -&gt; List(Int) {
+  list.filter_map(matrix, fn(row) {
+    case row {
+      [head, .._] -&gt; Ok(head)
+      [] -&gt; Error(Nil)
+    }
+  })
+}
+
+fn get_remaining_matrix(matrix: List(List(Int))) -&gt; List(List(Int)) {
+  list.map(matrix, fn(row) {
+    case row {
+      [_head, ..tail] -&gt; tail
+      [] -&gt; []
+    }
+  })
+}
+
+pub fn transpose(matrix: List(List(Int))) -&gt; List(List(Int)) {
+  case matrix {
+    [] -&gt; []
+    _ -&gt; {
+      let current_column = get_current_column(matrix)
+      case current_column {
+        [] -&gt; []
+        _ -&gt; {
+          let remaining_matrix = get_remaining_matrix(matrix)
+          [current_column, ..transpose(remaining_matrix)]
+        }
+      }
+    }
+  }
+}
+
+pub fn main() {
+  let matrix_to_transpose = [[1, 2, 3], [4, 5, 6]]
+  let transposed_result = transpose(matrix_to_transpose)
+  io.println(transposed_result)
+}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-matrix-gemini-2.5-pro-preview-06-05" role="dialog"><div class="box"><header><h3>Matrix — gemini-2.5-pro-preview-06-05</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
+import gleam/list
+import gleam/result
+
+fn transpose(matrix: List(List(a))) -&gt; List(List(a)) {
+  case list.traverse(matrix, list.first) {
+    Error(_) -&gt; []
+    Ok(heads) -&gt; {
+      let tails = list.map(matrix, fn(row) {
+        case row {
+          [_, ..tail] -&gt; tail
+          [] -&gt; []
+        }
+      })
+      [heads, ..transpose(tails)]
+    }
+  }
+}
+
+pub fn main() {
+  echo(transpose([[1, 2, 3], [4, 5, 6]]))
+}</code></pre></div></div></div></div></div><input checked id="case-hello" name="case" type="radio"><input checked id="case-defer" name="case" type="radio"><input checked id="case-matrix" name="case" type="radio"></div></body></html>

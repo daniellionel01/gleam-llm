@@ -30,6 +30,7 @@ const usage = "Usage:
 pub fn main() {
   let case_1 = make_case_1()
   let case_2 = make_case_2()
+  let case_3 = make_case_3()
 
   let reports = case argv.load().arguments {
     ["cache"] -> {
@@ -44,7 +45,8 @@ pub fn main() {
     [] -> {
       let reports_1 = run_case_for_all_models(case_1, validator_1)
       let reports_2 = run_case_for_all_models(case_2, validator_2)
-      [reports_1, reports_2]
+      let reports_3 = run_case_for_all_models(case_3, validator_3)
+      [reports_1, reports_2, reports_3]
     }
     _ -> {
       io.println(usage)
@@ -52,7 +54,7 @@ pub fn main() {
     }
   }
 
-  let assert [reports_1, reports_2] = reports
+  let assert [reports_1, reports_2, reports_3] = reports
 
   io.println("Storing Reports as JSON...")
 
@@ -68,6 +70,7 @@ pub fn main() {
   let cases_and_reports = [
     #(case_1, reports_1),
     #(case_2, reports_2),
+    #(case_3, reports_3),
   ]
   let html = generate_html(cases_and_reports)
 
@@ -160,6 +163,26 @@ fn validator_2(stdout: String) -> Bool {
   |> string.lowercase()
   |> string.trim()
   == "1\nhello"
+}
+
+fn make_case_3() -> Case {
+  Case(
+    id: "matrix",
+    title: "Matrix",
+    contents: "
+Write a Gleam program that defines a function transpose(matrix: List(List(Int))) -> List(List(Int)) which takes a matrix of integers and returns its transpose.
+The transpose flips rows into columns, so the element at position (i, j) becomes (j, i).
+Include a main function that exclusively prints the transpose of [[1, 2, 3], [4, 5, 6]], nothing else.
+",
+    deps: [],
+  )
+}
+
+fn validator_3(stdout: String) -> Bool {
+  stdout
+  |> string.lowercase()
+  |> string.trim()
+  == "[[1, 4], [2, 5], [3, 6]]"
 }
 
 pub fn generate_html(cases_and_reports: List(#(Case, List(Report)))) {
