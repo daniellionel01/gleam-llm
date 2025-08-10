@@ -6,6 +6,12 @@ The first line you output is the first line of code. No code splitting at all.
 Do not annotate your code with any comments.
 "
 
+pub const iterate_message = "
+Your code did not work out and yielded a compile error. Please read if carefully, solve the issue and give me back the full code.
+You output the code directly and it has to be contained in one file.
+The first line you output is the first line of code. No code splitting at all.
+"
+
 pub const css_reset = "
 /* Box sizing rules */
 *,

@@ -21,6 +21,7 @@ pub type Provider {
 }
 
 pub type Model {
+  GPT5
   GPT4o
   O4mini
   Claude37Sonnet
@@ -32,7 +33,8 @@ pub type Model {
 pub fn model_decoder() -> decode.Decoder(Model) {
   use variant <- decode.then(decode.string)
   case variant {
-    "g_p_t4o" -> decode.success(GPT4o)
+    "gpt5" -> decode.success(GPT5)
+    "gpt4o" -> decode.success(GPT4o)
     "o4mini" -> decode.success(O4mini)
     "claude37_sonnet" -> decode.success(Claude37Sonnet)
     "claude_sonnet4" -> decode.success(ClaudeSonnet4)
@@ -44,7 +46,8 @@ pub fn model_decoder() -> decode.Decoder(Model) {
 
 pub fn model_to_json(model: Model) -> json.Json {
   case model {
-    GPT4o -> json.string("g_p_t4o")
+    GPT5 -> json.string("gpt5")
+    GPT4o -> json.string("gpt4o")
     O4mini -> json.string("o4mini")
     Claude37Sonnet -> json.string("claude37_sonnet")
     ClaudeSonnet4 -> json.string("claude_sonnet4")
@@ -54,6 +57,7 @@ pub fn model_to_json(model: Model) -> json.Json {
 }
 
 pub const all_models = [
+  GPT5,
   GPT4o,
   O4mini,
   Claude37Sonnet,
@@ -251,6 +255,7 @@ pub fn provider_decoder(provider: Provider) -> decode.Decoder(DecodedResult) {
 
 pub fn model_to_identifier(model: Model) -> String {
   case model {
+    GPT5 -> "gpt-5-2025-08-07"
     GPT4o -> "gpt-4o-2024-11-20"
     O4mini -> "o4-mini-2025-04-16"
     Claude37Sonnet -> "claude-3-7-sonnet-20250219"
@@ -262,6 +267,7 @@ pub fn model_to_identifier(model: Model) -> String {
 
 pub fn get_provider(model: Model) {
   case model {
+    GPT5 -> OpenAI
     GPT4o -> OpenAI
     O4mini -> OpenAI
     Claude37Sonnet -> Anthropic
