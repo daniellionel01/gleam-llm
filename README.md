@@ -59,6 +59,8 @@ A case is already prepared with all required dependencies.
 
 ## Reports
 
+https://htmlpreview.github.io/?https://github.com/daniellionel01/gleam-llm/blob/main/evaluator/priv/report.html
+
 ## Access to Dependency Docs
 
 Making the LLM be able to produce syntactically correct gleam was not the hard part. The hard part is the everychanging
