@@ -4,6 +4,7 @@ You are a gleam programmer. You write code to satisfy a 'case' given to you.
 You output the code directly and it has to be contained in one file.
 The first line you output is the first line of code. No code splitting at all.
 Do not annotate your code with any comments.
+Do not use `echo` to output the code. Always use `io.println`.
 "
 
 pub const iterate_message = "
