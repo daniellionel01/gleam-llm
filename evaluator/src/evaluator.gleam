@@ -4,6 +4,7 @@ import evaluator/case_.{
   Invalid, Report, Valid, evaluation_from_bool,
 }
 import evaluator/constants
+import evaluator/constants/tour
 import evaluator/llm
 import evaluator/project
 import given
@@ -20,13 +21,6 @@ import simplifile
 const cache_path = "./priv/_cache/reports.json"
 
 const report_path = "./priv/report.html"
-
-const context = "
-You are a gleam programmer. You write code to satisfy a 'case' given to you.
-You output the code directly and it has to be contained in one file.
-The first line you output is the first line of code. No code splitting at all.
-Do not annotate your code with any comments.
-"
 
 const usage = "Usage:
   gleam run
@@ -85,8 +79,9 @@ pub fn evaluate_case(
   validator: Validator,
   model: llm.Model,
 ) -> Result(#(String, Evaluation), String) {
-  let assert Ok(program) =
-    llm.prompt(model, system: context, user: case_.contents)
+  let system = tour.gleam_tour_md <> "\n\n" <> constants.context
+
+  let assert Ok(program) = llm.prompt(model, system:, user: case_.contents)
 
   let program =
     program
