@@ -1,3 +1,4 @@
+import argv
 import evaluator/case_.{
   type Case, type Evaluation, type Report, type Validator, Case, CompileError,
   Invalid, Report, Valid, evaluation_from_bool,
@@ -26,6 +27,58 @@ You output the code directly and it has to be contained in one file.
 The first line you output is the first line of code. No code splitting at all.
 Do not annotate your code with any comments.
 "
+
+const usage = "Usage:
+  gleam run
+  gleam run cache
+"
+
+pub fn main() {
+  let case_1 = make_case_1()
+  let case_2 = make_case_2()
+
+  let reports = case argv.load().arguments {
+    ["cache"] -> {
+      let assert Ok(reports_json) = simplifile.read(cache_path)
+      let assert Ok(reports) =
+        json.parse(
+          reports_json,
+          using: decode.list(decode.list(case_.report_decoder())),
+        )
+      reports
+    }
+    [] -> {
+      let reports_1 = run_case_for_all_models(case_1, validator_1)
+      let reports_2 = run_case_for_all_models(case_2, validator_2)
+      [reports_1, reports_2]
+    }
+    _ -> {
+      io.println(usage)
+      panic as "unknown argument"
+    }
+  }
+
+  let assert [reports_1, reports_2] = reports
+
+  io.println("Storing Reports as JSON...")
+
+  let generated_json =
+    json.array(reports, of: fn(reports) {
+      json.array(reports, of: case_.report_to_json)
+    })
+    |> json.to_string()
+  let assert Ok(_) = simplifile.write(cache_path, generated_json)
+
+  io.println("Generating HTML Report...")
+
+  let cases_and_reports = [
+    #(case_1, reports_1),
+    #(case_2, reports_2),
+  ]
+  let html = generate_html(cases_and_reports)
+
+  let assert Ok(_) = simplifile.write(report_path, html)
+}
 
 pub fn evaluate_case(
   case_: Case,
@@ -114,83 +167,47 @@ fn validator_2(stdout: String) -> Bool {
   == "1\nhello"
 }
 
-pub fn main() {
-  let case_1 = make_case_1()
-  let case_2 = make_case_2()
-
-  // ### Use to generate new reports
-  // let reports_1 = run_case_for_all_models(case_1, validator_1)
-  // let reports_2 = run_case_for_all_models(case_2, validator_2)
-
-  // let reports = [reports_1, reports_2]
-  // ###
-
-  // ### Use to use cached reports
-  let assert Ok(reports_json) = simplifile.read(cache_path)
-  let assert Ok(reports) =
-    json.parse(
-      reports_json,
-      using: decode.list(decode.list(case_.report_decoder())),
-    )
-  let assert [reports_1, reports_2] = reports
-  // ###
-
-  io.println("Storing Reports as JSON...")
-
-  let generated_json =
-    json.array(reports, of: fn(reports) {
-      json.array(reports, of: case_.report_to_json)
-    })
-    |> json.to_string()
-  let assert Ok(_) = simplifile.write(cache_path, generated_json)
-
-  io.println("Generating HTML Report...")
-
-  let cases_and_reports = [
-    #(case_1, reports_1),
-    #(case_2, reports_2),
-  ]
+pub fn generate_html(cases_and_reports: List(#(Case, List(Report)))) {
   let cases = list.map(cases_and_reports, fn(c_r) { c_r.0 })
 
-  let html =
-    html.html([attribute.lang("en")], [
-      html.head([], [
-        html.meta([attribute.charset("utf-8")]),
-        html.meta([
-          attribute.name("viewport"),
-          attribute.content("width=device-width, initial-scale=1"),
-        ]),
-        html.title([], "Gleam LLM Report"),
-        html.link([
-          attribute.href("https://fav.farm/%F0%9F%A4%96"),
-          attribute.rel("icon"),
-        ]),
-        html.style([], constants.css_reset),
-        html.style([], style),
+  html.html([attribute.lang("en")], [
+    html.head([], [
+      html.meta([attribute.charset("utf-8")]),
+      html.meta([
+        attribute.name("viewport"),
+        attribute.content("width=device-width, initial-scale=1"),
+      ]),
+      html.title([], "Gleam LLM Report"),
+      html.link([
+        attribute.href("https://fav.farm/%F0%9F%A4%96"),
+        attribute.rel("icon"),
+      ]),
+      html.style([], constants.css_reset),
+      html.style([], style),
 
-        html.style(
-          [],
-          cases
-            |> list.map(fn(case_) { "
+      html.style(
+        [],
+        cases
+          |> list.map(fn(case_) { "
           #case-select:has(#case-" <> case_.id <> ":checked) #view-" <> case_.id <> " { display:block; }
           #case-select:has(#case-" <> case_.id <> ":checked) .sidebar label[for=\"case-" <> case_.id <> "\"] {
             background:#e9f3ff; border:1px solid #bcd7ff; font-weight:600;
           }
         " })
-            |> string.join("\n"),
-        ),
+          |> string.join("\n"),
+      ),
 
-        html.link([
-          attribute.href(
-            "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/atom-one-light.min.css",
-          ),
-          attribute.rel("stylesheet"),
-        ]),
-        html.script([attribute.src("./js/highlight.min.js")], ""),
-        html.script([attribute.src("./js/highlight-gleam.js")], ""),
-        html.script(
-          [],
-          "
+      html.link([
+        attribute.href(
+          "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.11.1/build/styles/atom-one-light.min.css",
+        ),
+        attribute.rel("stylesheet"),
+      ]),
+      html.script([attribute.src("./js/highlight.min.js")], ""),
+      html.script([attribute.src("./js/highlight-gleam.js")], ""),
+      html.script(
+        [],
+        "
           window.addEventListener(\"DOMContentLoaded\", () => {
             if (window.hljsDefineGleam) {
               hljs.registerLanguage(\"gleam\", window.hljsDefineGleam);
@@ -202,143 +219,139 @@ pub fn main() {
             hljs.highlightAll();
           });
 ",
-        ),
-      ]),
-      html.body([], [
-        html.div([attribute.id("case-select")], [
-          html.div([attribute.class("app")], [
-            html.aside([attribute.class("sidebar")], [
-              html.h2([], [html.text("Cases")]),
-              ..{
-                use case_ <- list.map(cases)
-                html.label(
-                  [
-                    attribute.for("case-" <> case_.id),
-                    attribute.class("case-link"),
-                  ],
-                  [html.text(case_.title)],
-                )
-              }
-            ]),
-            html.main([attribute.class("main")], {
-              use #(case_, reports) <- list.map(cases_and_reports)
-              html.section(
-                [attribute.class("case"), attribute.id("view-" <> case_.id)],
+      ),
+    ]),
+    html.body([], [
+      html.div([attribute.id("case-select")], [
+        html.div([attribute.class("app")], [
+          html.aside([attribute.class("sidebar")], [
+            html.h2([], [html.text("Cases")]),
+            ..{
+              use case_ <- list.map(cases)
+              html.label(
                 [
-                  html.h1(
-                    [
-                      attribute.style("font-size", "18px"),
-                      attribute.style("margin", "0 0 15px"),
-                    ],
-                    [html.text("Case: " <> case_.title)],
-                  ),
-                  html.p([attribute.style("margin", "0 0 15px")], [
-                    html.text(case_.contents),
+                  attribute.for("case-" <> case_.id),
+                  attribute.class("case-link"),
+                ],
+                [html.text(case_.title)],
+              )
+            }
+          ]),
+          html.main([attribute.class("main")], {
+            use #(case_, reports) <- list.map(cases_and_reports)
+            html.section(
+              [attribute.class("case"), attribute.id("view-" <> case_.id)],
+              [
+                html.h1(
+                  [
+                    attribute.style("font-size", "18px"),
+                    attribute.style("margin", "0 0 15px"),
+                  ],
+                  [html.text("Case: " <> case_.title)],
+                ),
+                html.p([attribute.style("margin", "0 0 15px")], [
+                  html.text(case_.contents),
+                ]),
+                html.table([], [
+                  html.thead([], [
+                    html.tr([], [
+                      html.th([attribute.style("width", "40%")], [
+                        html.text("model"),
+                      ]),
+                      html.th([attribute.style("width", "10%")], [
+                        html.text("valid"),
+                      ]),
+                      html.th([], [html.text("code")]),
+                    ]),
                   ]),
-                  html.table([], [
-                    html.thead([], [
-                      html.tr([], [
-                        html.th([attribute.style("width", "40%")], [
-                          html.text("model"),
-                        ]),
-                        html.th([attribute.style("width", "10%")], [
-                          html.text("valid"),
-                        ]),
-                        html.th([], [html.text("code")]),
+                  html.tbody([], {
+                    use report <- list.map(reports)
+                    let model = llm.model_to_identifier(report.model)
+
+                    html.tr([], [
+                      html.td([], [
+                        html.text(model),
+                      ]),
+                      {
+                        case report.eval {
+                          CompileError ->
+                            html.td([attribute.class("valid-false")], [
+                              html.text("false"),
+                            ])
+                          Invalid ->
+                            html.td([attribute.class("valid-false")], [
+                              html.text("false"),
+                            ])
+                          Valid ->
+                            html.td([attribute.class("valid-true")], [
+                              html.text("true"),
+                            ])
+                        }
+                      },
+                      html.td([], [
+                        html.a(
+                          [
+                            attribute.href("#code-" <> case_.id <> "-" <> model),
+                            attribute.class("btn"),
+                          ],
+                          [html.text("View code")],
+                        ),
+                      ]),
+                    ])
+                  }),
+                ]),
+              ],
+            )
+          }),
+          html.div(
+            [],
+            list.flatten({
+              use #(case_, reports) <- list.map(cases_and_reports)
+              use report <- list.map(reports)
+
+              let model = llm.model_to_identifier(report.model)
+
+              html.div(
+                [
+                  attribute.role("dialog"),
+                  attribute.attribute("aria-modal", "true"),
+                  attribute.class("modal"),
+                  attribute.id("code-" <> case_.id <> "-" <> model),
+                ],
+                [
+                  html.div([attribute.class("box")], [
+                    html.header([], [
+                      html.h3([], [
+                        html.text(case_.title <> " — " <> model),
+                      ]),
+                      html.a([attribute.href("#"), attribute.class("close")], [
+                        html.text("Close"),
                       ]),
                     ]),
-                    html.tbody([], {
-                      use report <- list.map(reports)
-                      let model = llm.model_to_identifier(report.model)
-
-                      html.tr([], [
-                        html.td([], [
-                          html.text(model),
-                        ]),
-                        {
-                          case report.eval {
-                            CompileError ->
-                              html.td([attribute.class("valid-false")], [
-                                html.text("false"),
-                              ])
-                            Invalid ->
-                              html.td([attribute.class("valid-false")], [
-                                html.text("false"),
-                              ])
-                            Valid ->
-                              html.td([attribute.class("valid-true")], [
-                                html.text("true"),
-                              ])
-                          }
-                        },
-                        html.td([], [
-                          html.a(
-                            [
-                              attribute.href(
-                                "#code-" <> case_.id <> "-" <> model,
-                              ),
-                              attribute.class("btn"),
-                            ],
-                            [html.text("View code")],
-                          ),
-                        ]),
-                      ])
-                    }),
+                    html.div([attribute.class("body")], [
+                      html.pre([], [
+                        html.code([], [html.text(report.program)]),
+                      ]),
+                    ]),
                   ]),
                 ],
               )
             }),
-            html.div(
-              [],
-              list.flatten({
-                use #(case_, reports) <- list.map(cases_and_reports)
-                use report <- list.map(reports)
-
-                let model = llm.model_to_identifier(report.model)
-
-                html.div(
-                  [
-                    attribute.role("dialog"),
-                    attribute.attribute("aria-modal", "true"),
-                    attribute.class("modal"),
-                    attribute.id("code-" <> case_.id <> "-" <> model),
-                  ],
-                  [
-                    html.div([attribute.class("box")], [
-                      html.header([], [
-                        html.h3([], [
-                          html.text(case_.title <> " — " <> model),
-                        ]),
-                        html.a([attribute.href("#"), attribute.class("close")], [
-                          html.text("Close"),
-                        ]),
-                      ]),
-                      html.div([attribute.class("body")], [
-                        html.pre([], [
-                          html.code([], [html.text(report.program)]),
-                        ]),
-                      ]),
-                    ]),
-                  ],
-                )
-              }),
-            ),
-          ]),
-          ..{
-            use case_ <- list.map(cases)
-            html.input([
-              attribute.checked(True),
-              attribute.id("case-" <> case_.id),
-              attribute.name("case"),
-              attribute.type_("radio"),
-            ])
-          }
+          ),
         ]),
+        ..{
+          use case_ <- list.map(cases)
+          html.input([
+            attribute.checked(True),
+            attribute.id("case-" <> case_.id),
+            attribute.name("case"),
+            attribute.type_("radio"),
+          ])
+        }
       ]),
-    ])
-    |> element.to_document_string()
-
-  let assert Ok(_) = simplifile.write(report_path, html)
+    ]),
+  ])
+  |> element.to_document_string()
 }
 
 const style = "
