@@ -479,6 +479,9 @@ Here the function `add_one` is being passed as an argument to the `twice` functi
 
 Notice the `fn` keyword is also used to describe the type of the function that `twice` takes as its second argument.
 
+When you define the type of a function in the parameters you only pass the type and not the argument name. The argument name
+is ommitted. So instead of `fn(a: Int) -> Int` you just write `fn(Int) -> Int`.
+
 ```gleam
 pub fn main() {
   // Call a function with another function

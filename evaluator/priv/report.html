@@ -258,23 +258,23 @@ pub fn main() {
   io.println(&quot;hello, world!&quot;)
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gpt-4o-2024-11-20" role="dialog"><div class="box"><header><h3>Defer — gpt-4o-2024-11-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
-pub fn defer(action: fn() -&gt; a) -&gt; Result(b, Nil) {
-  use cleanup &lt;- result.try(fn(inner_cleanup) {
-    action()
-    inner_cleanup
-  })
-  Ok(cleanup)
+pub fn main() {
+  use _ &lt;- defer(fn() { io.println(&quot;hello&quot;) })
+  io.println(&quot;1&quot;)
 }
 
-pub fn main() {
-  use _clean &lt;- defer(fn() { io.println(&quot;hello&quot;) })
-  io.println(&quot;1&quot;)
+pub fn defer(action: fn() -&gt; Nil) -&gt; Result(Nil, Nil) {
+  Result(fn() {
+    action()
+    Nil
+  })
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-o4-mini-2025-04-16" role="dialog"><div class="box"><header><h3>Defer — o4-mini-2025-04-16</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
-pub fn defer(callback: fn() -&gt; Nil) -&gt; fn(block: fn(Nil) -&gt; Nil) -&gt; Nil {
-  fn(block) {
-    block(Nil)
-    callback()
+pub fn defer(deferred: fn() -&gt; Nil) -&gt; fn(fn(Nil) -&gt; a) -&gt; a {
+  fn(callback) {
+    let result = callback(Nil)
+    deferred()
+    result
   }
 }
 
@@ -288,62 +288,37 @@ pub fn main() {
   io.println(&quot;1&quot;)
 }
 
-pub fn defer(cleanup: fn() -&gt; Nil, continuation: fn() -&gt; a) -&gt; a {
+pub fn defer(callback: fn() -&gt; a, continuation: fn() -&gt; b) -&gt; b {
   let result = continuation()
-  cleanup()
+  callback()
   result
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-claude-sonnet-4-20250514" role="dialog"><div class="box"><header><h3>Defer — claude-sonnet-4-20250514</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
-
-pub fn main() {
-  use &lt;- defer(fn() { io.println(&quot;hello&quot;) })
-  io.println(&quot;1&quot;)
-}
 
 pub fn defer(cleanup: fn() -&gt; Nil, callback: fn() -&gt; a) -&gt; a {
   let result = callback()
   cleanup()
   result
-}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gemini-2.5-flash-preview-05-20" role="dialog"><div class="box"><header><h3>Defer — gemini-2.5-flash-preview-05-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
-
-/// A utility function that executes a given `action` after the `next`
-/// function (which represents the body of the `use` block) has completed.
-///
-/// This mimics a &quot;defer&quot; or &quot;finally&quot; mechanism by reordering the execution.
-/// The `use` keyword transforms `use value &lt;- defer(action)` into
-/// `defer(action, fn(value) { ...body... })`.
-///
-/// The `action` is the function to be deferred, taking no arguments and returning Nil.
-/// The `next` is the continuation, representing the code that follows in the
-/// `use` block, taking the value returned by `defer`&#39;s first part (`Nil` in this case)
-/// and returning a value of type `T`.
-/// The `defer` function itself returns `T`, which is the result of the `next` function.
-pub fn defer(action: fn() -&gt; Nil, next: fn(Nil) -&gt; T) -&gt; T {
-  // First, execute the &quot;next&quot; part of the code, which is the body
-  // of the `use` block.
-  let result = next(Nil)
-
-  // After the `use` block&#39;s body has executed, perform the deferred action.
-  action()
-
-  // Return the result of the `use` block&#39;s body.
-  result
 }
 
 pub fn main() {
+  use &lt;- defer(fn() { io.println(&quot;hello&quot;) })
   io.println(&quot;1&quot;)
+}</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gemini-2.5-flash-preview-05-20" role="dialog"><div class="box"><header><h3>Defer — gemini-2.5-flash-preview-05-20</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
-  // Demonstrate deferring a print statement.
-  // The `fn() { io.println(&quot;hello&quot;) }` will be executed after
-  // the code inside the `use` block.
+pub fn main() {
+  io.println(&quot;1&quot;)
   use _ &lt;- defer(fn() { io.println(&quot;hello&quot;) })
+}
 
-  // This line is inside the `use` block, so it runs *before* the deferred action.
-  io.println(&quot;2&quot;)
+pub fn defer(clean_up_action: fn() -&gt; Nil, main_block: fn(Nil) -&gt; a) -&gt; a {
+  let result = main_block(Nil)
+  clean_up_action()
+  result
 }</code></pre></div></div></div><div aria-modal="true" class="modal" id="code-defer-gemini-2.5-pro-preview-06-05" role="dialog"><div class="box"><header><h3>Defer — gemini-2.5-pro-preview-06-05</h3><a class="close" href="#">Close</a></header><div class="body"><pre><code>import gleam/io
 
-fn defer(action: fn() -&gt; a, run: fn() -&gt; b) -&gt; b {
-  let result = run()
-  let _ = action()
+fn defer(deferred_action: fn() -&gt; a, main_action: fn() -&gt; b) -&gt; b {
+  let result = main_action()
+  deferred_action()
   result
 }
 
