@@ -227,20 +227,21 @@ pub fn main() {
                 [
                   html.h1(
                     [
-                      attribute.attribute(
-                        "style",
-                        "font-size: 18px; margin: 0 0 12px",
-                      ),
+                      attribute.style("font-size", "18px"),
+                      attribute.style("margin", "0 0 12px"),
                     ],
                     [html.text("Case: " <> case_.title)],
                   ),
+                  html.p([attribute.style("margin", "0 0 12px")], [
+                    html.text(case_.contents),
+                  ]),
                   html.table([], [
                     html.thead([], [
                       html.tr([], [
-                        html.th([attribute.attribute("style", "width: 40%")], [
+                        html.th([attribute.style("width", "40%")], [
                           html.text("model"),
                         ]),
-                        html.th([attribute.attribute("style", "width: 10%")], [
+                        html.th([attribute.style("width", "10%")], [
                           html.text("valid"),
                         ]),
                         html.th([], [html.text("code")]),
