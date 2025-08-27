@@ -3,6 +3,12 @@ set dotenv-load
 run:
   gleam run
 
+run-web:
+  gleam run web
+
+run-cache:
+  gleam run cache
+
 test:
   gleam test
 

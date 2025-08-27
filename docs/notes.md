@@ -18,16 +18,19 @@
   - how many iterations should be the max. for a LLM to try?
 
 ## todo
-  - [x] cache report results as json
-  - [ ] generated html report
-    - [ ] display case contents inside of accordion
-    - [ ] charts how well certain models do over all cases
-    - [ ] nicer styling & formatting
-    - [ ] code highlighting
+  - [ ] sqlite database
+    - [ ] profiles: id, max_iterations, models to test
+    - [ ] case: id, slug, description
+    - [ ] case run: programming language, model, case,
+  - [ ] populate openai models from api?
+  - [ ] programming languages type: javascript, typescript,
+  - [ ] programming language engine: code -> stdout, dependencies, system prompt
   - [ ] allow for multiple iterations for model on case and give it gleam compiler output to allow it to attempt and fix its own mistake/s
+  - [ ] charts how well certain models do over all cases
 
 ## miscelleaneous
 
+- https://openrouter.ai/
 
 - baseline with other languages
   - python (with uv)

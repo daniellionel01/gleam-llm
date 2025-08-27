@@ -1,4 +1,5 @@
 import argv
+import env
 import evaluator/case_.{
   type Case, type Evaluation, type Report, type Validator, Case, CompileError,
   Invalid, Report, Valid, evaluation_from_bool,
@@ -30,11 +31,16 @@ const usage = "Usage:
 "
 
 pub fn main() {
+  let _ = env.get_env()
+
   let case_1 = make_case_1()
   let case_2 = make_case_2()
   let case_3 = make_case_3()
 
   let reports = case argv.load().arguments {
+    ["web"] -> {
+      todo
+    }
     ["cache"] -> {
       let assert Ok(reports_json) = simplifile.read(cache_path)
       let assert Ok(reports) =

@@ -101,6 +101,8 @@ pub fn prompt(
     |> result.map_error(fn(err) { ResponseError(err) }),
   )
 
+  echo resp.body
+
   use choice <- result.try(
     flatten_decoded_result(data)
     |> result.map_error(fn(_) { EmptyResponseError }),
