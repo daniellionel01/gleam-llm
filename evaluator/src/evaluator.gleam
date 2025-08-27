@@ -22,6 +22,8 @@ const cache_path = "./priv/_cache/reports.json"
 
 const report_path = "./priv/report.html"
 
+const max_iterations = 3
+
 const usage = "Usage:
   gleam run
   gleam run cache
