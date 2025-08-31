@@ -30,6 +30,14 @@
 
 ## miscelleaneous
 
+- running gleam securely
+  - podman
+  - https://github.com/daytonaio/daytona
+
+- https://gleam.run/case-studies/strand/ quote about AI
+
+- https://eval.16x.engineer/
+
 - https://openrouter.ai/
 
 - baseline with other languages
