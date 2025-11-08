@@ -1,32 +1,26 @@
 # Gleam LLM
 
-A report on abilities of various popular LLMs to write correct [gleam](https://gleam.run/) code.
+An analysis on abilities of various popular LLMs to write correct [gleam](https://gleam.run/) code.
 
 **This project is a work in progress and not complete! No results have been concluded yet.**
 
 ## Introduction
 
-At the time of this writing (June 2025), LLMs across the board are quite bad at writing gleam code.
-They hallucinate syntax (if statements), hallucinate functions from the stdlib, forget to unwrap result type,
-and do not know how to leverage `use`.
+At the time of this writing (November 2025), LLMs across the board are quite bad at writing gleam code. They hallucinate syntax (especially `if` statements), hallucinate functions in the stdlib, forget to unwrap result type, and do not know how to leverage `use` correctly.
 
-Since gleam itself is quite a minimalistic language, I think it would not take much additional context for a
-LLM to be able to write quality gleam code. If we made this work, this should yield in a powerful agentic coding
-assistant. Coupled with quick feedback loops that it achieves with a compiler that gives useful error messages.
+Since gleam itself is quite a minimalistic language, I think it would not take much additional context for a LLM to be able to write quality gleam code. If we made this work, this should yield in a powerful agentic coding assistant. Coupled with quick feedback loops, that it achieves with a compiler that gives useful error messages.
 
 *Disclaimer: pretty much all information in here is subject to change at least every couple of months
 as new models come out, existing models are updated and prices change.*
 
 ## Methodology
 
-To achieve our goal, here is an outline of our approach:
+To get a good grip on the reality of the situation, here is an outline of the approach:
 
-1. create an evaluator that takes a case (which is a description of a gleam program for the LLM), prompts the LLM
-  and automatically evaluates the output, giving it a maximum of 5 iterations to give us a correct gleam program.
-2. analyse weak points of common failures across llms and cases (f.e. a certain aspect of the gleam syntax)
-3. come up with different llm.txt and run evaluator again, this time with the llm.txt as additional context
-4. identify and compress most efficient llm.txt as much as possible, as to keep cost as low as possible while
-  prioritising program correctness (only 100% is acceptable).
+1. Create an evaluator that takes a case (which is a description of a gleam program for the LLM), prompts the LLM and automatically evaluates the output, giving it a maximum of 5 iterations to give us a correct gleam program.
+2. Analyse weak points of common failures across llms and cases (f.e. a certain aspect of the gleam syntax)
+3. Come up with different system contexts and feed them to the evaluator.
+4. Identify and compress the most efficient system context, as to keep token costs as low as possible while prioritising program correctness (threshold of >95%).
 
 ## Evaluator
 
@@ -55,7 +49,9 @@ These are the LLM providers we are going to prompt:
 
 A case is already prepared with all required dependencies.
 
-## LLM.txt
+To make sure, that our case description are indeed viable for a LLM, we will also run the code for different program languages, that are known to work well with LLMs. In this case I have chosen python, golang, rust, haskell, ocaml, elixir. This covers a wide range of languages with a lot of different properties.
+
+## Gleam System Context
 
 ## Reports
 
@@ -63,11 +59,14 @@ https://htmlpreview.github.io/?https://github.com/daniellionel01/gleam-llm/blob/
 
 ## Access to Dependency Docs
 
-Making the LLM be able to produce syntactically correct gleam was not the hard part. The hard part is the everychanging
-landscape and api of gleam packages that are being used.
+Making the LLM be able to produce syntactically correct gleam was not the hard part. The hard part is the everychanging landscape and api of gleam packages that are being used.
 
 ## MCP Server
 
 ## Conclusion
 
-Since the llm.txt would be given to every new thread with a LLM, let us break down the costs for the providers (https://llm-stats.com/):
+Since the gleam system context would be given to every new thread with a LLM, let us break down the costs for the providers (https://llm-stats.com/):
+
+## Application to a real world project
+
+- Token caching!
