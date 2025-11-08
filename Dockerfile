@@ -21,7 +21,7 @@ RUN set -eux; \
   ./install.sh; \
   mv /root/.bun/bin/bun /usr/local/bin/bun;
 
-ARG GO_VERSION=1.23.2
+ARG GO_VERSION=1.25.4
 RUN set -eux; \
   curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-arm64.tar.gz" -o /tmp/go.tgz; \
   tar -C /usr/local -xzf /tmp/go.tgz; rm -f /tmp/go.tgz; \
