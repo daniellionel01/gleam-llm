@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 RUN set -eux; \
   apt-get update; \
   apt-get install -y --no-install-recommends \
-  ca-certificates curl gnupg git bash xz-utils unzip \
+  ca-certificates curl gnupg git bash xz-utils unzip bsdextrautils \
   build-essential pkg-config \
   python3 python3-venv python3-pip \
   ocaml-nox \
