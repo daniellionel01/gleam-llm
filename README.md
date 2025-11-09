@@ -4,6 +4,10 @@ An analysis on abilities of various popular LLMs to write correct [gleam](https:
 
 **This project is a work in progress and not complete! No results have been concluded yet.**
 
+## Update 11/25
+
+As of November 2025, with the constant knowledge update and release of LLM models, I am noticing a consistent improvement of their ability to write correct Gleam code. Especially Anthropics models and recently GPT5. Since those are the models I mainly use, I do not longer think, that this project makes a lot of sense. It will cost quite a bit of money to run all of the tests and time to create useful tooling to run tests across multiple languages. So for now, this project is archived. Feel free to use anything I have created in this repository up until this point.
+
 ## Introduction
 
 At the time of this writing (November 2025), LLMs across the board are quite bad at writing gleam code. They hallucinate syntax (especially `if` statements), hallucinate functions in the stdlib, forget to unwrap result type, and do not know how to leverage `use` correctly.
@@ -40,12 +44,22 @@ These are the cases we are going to let the LLM attempt to implement:
 - write something with erlang & otp
 
 These are the LLM providers we are going to prompt:
-- gpt-4o-2024-11-20
-- o4-mini-2025-04-16
-- claude-3-7-sonnet-20250219
-- claude-sonnet-4-20250514
-- gemini-2.5-flash-preview-05-20
-- gemini-2.5-pro-preview-06-05
+- openai
+  - openai/gpt-5
+  - openai/gpt-5-mini
+  - openai/codex-mini
+  - openai/o4-mini
+  - openai/gpt-4o
+- anthropic
+  - anthropic/claude-haiku-4.5
+  - anthropic/claude-sonnet-4.5
+  - anthropic/claude-3.7-sonnet
+- google gemini
+  - google/gemini-2.5-flash-preview-09-2025
+  - google/gemini-2.5-flash-lite-preview-09-2025
+- grok
+  - x-ai/grok-4-fast (reasoning)
+  - x-ai/grok-4-fast (non reasoning)
 
 A case is already prepared with all required dependencies.
 
