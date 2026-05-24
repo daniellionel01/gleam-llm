@@ -10,7 +10,7 @@ As of November 2025, with the constant knowledge update and release of LLM model
 
 ## Introduction
 
-At the time of this writing (November 2025), LLMs across the board are quite bad at writing gleam code. They hallucinate syntax (especially `if` statements), hallucinate functions in the stdlib, forget to unwrap result type, and do not know how to leverage `use` correctly.
+At the time of this writing (June 2025), LLMs across the board are quite bad at writing gleam code. They hallucinate syntax (especially `if` statements), hallucinate functions in the stdlib, forget to unwrap result type, and do not know how to leverage `use` correctly.
 
 Since gleam itself is quite a minimalistic language, I think it would not take much additional context for a LLM to be able to write quality gleam code. If we made this work, this should yield in a powerful agentic coding assistant. Coupled with quick feedback loops, that it achieves with a compiler that gives useful error messages.
 
